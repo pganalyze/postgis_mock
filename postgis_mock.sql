@@ -49,61 +49,17 @@
 -- INSTALL VERSION: '3.2.1'
 
 
-DO $$
-DECLARE
-	pgver text;
-BEGIN
-	SELECT pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') INTO pgver;
 
-	IF 96::text != ( SELECT CASE
-		WHEN pg_catalog.split_part(s,'.',1)::integer > 9
-			THEN pg_catalog.split_part(s,'.',1) || '0'
-		ELSE
-			pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2)
-		END
-		FROM pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') AS s )
-	THEN
-		RAISE EXCEPTION 'PostGIS built for PostgreSQL % cannot be loaded in PostgreSQL %',
-			9.6, pgver;
-	END IF;
-END;
-$$;
 
 
 -- Check that no other postgis is installed
-DO $$
-DECLARE
-  rec RECORD;
-BEGIN
-  FOR rec IN
-	SELECT n.nspname, p.proname FROM pg_catalog.pg_proc p, pg_catalog.pg_namespace n
-	WHERE p.proname = 'postgis_version'
-	AND p.pronamespace = n.oid
-  LOOP
-	RAISE EXCEPTION 'PostGIS is already installed in schema ''%''', rec.nspname;
-  END LOOP;
-END
-$$ LANGUAGE 'plpgsql';
+
 
 
 -- Check that pgaudit is disabled or not installed
 -- Running extension creation with pgaudit enabled will result in a
 -- multi-gigabyte log storm for PgSQL <= 14
-DO $$
-DECLARE
-	pgalog text;
-BEGIN
-	SHOW pgaudit.log INTO pgalog;
-	RAISE DEBUG 'pgaudit is installed, pgaudit.log is set to ''%''', pgalog;
-	IF pg_catalog.lower(pgalog) != 'none'
-	THEN
-		RAISE EXCEPTION 'PostGIS installation stopped: pgaudit.log is set to ''%''. Set pgaudit.log to ''none'' before installing PostGIS. You may re-enable pgaudit after installation is complete.', pgalog;
-	END IF;
-EXCEPTION
-	WHEN undefined_object THEN
-		RAISE DEBUG 'pgaudit is not installed';
-END;
-$$;
+
 
 
 -- Let the user know about a deprecated signature and its new name, if any

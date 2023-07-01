@@ -24,6 +24,10 @@ x.gsub!("DEFAULT 'POINT(0 0)'", 'DEFAULT NULL::geometry') # ST_Hexagon and ST_Sq
 # (as they'd require running the corresponding C code during planning)
 x.gsub!(/(,?\s+)((RESTRICT|JOIN) = gserialized_[\w_]+)/, '')
 
+# Avoid DO blocks that are used for validating the install environment
+# (we want to process this without requiring PL/pgSQL function execution)
+x.gsub!(/DO \$\$.*?\$\$( LANGUAGE 'plpgsql')?;/m, '')
+
 # TODO: This should probably be context-specific
 x.gsub!('@extschema@', 'public')
 
