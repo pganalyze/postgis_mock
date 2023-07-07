@@ -1,14 +1,20 @@
 #!/usr/bin/env ruby
 
 POSTGIS_VERSION = '3.2.1'
+POSTGIS_MAJOR   = POSTGIS_VERSION.split('.')[0..1].join('.')
+MODULEPATH      = '$libdir/postgis-' + POSTGIS_MAJOR
 
 TMP_DIR = File.join(__dir__, '..', 'tmp')
 
 `curl -o #{File.join(TMP_DIR, 'postgis.tar.gz')} https://download.osgeo.org/postgis/source/postgis-#{POSTGIS_VERSION}.tar.gz`
 `tar -xjf #{File.join(TMP_DIR, 'postgis.tar.gz')} -C #{TMP_DIR}`
 
-x = Dir.chdir(File.join(TMP_DIR, 'postgis-' + POSTGIS_VERSION, 'postgis')) do
-  `cpp -traditional-cpp -w -P postgis.sql.in`
+x = nil
+
+Dir.chdir(File.join(TMP_DIR, 'postgis-' + POSTGIS_VERSION, 'postgis')) do
+  # Assume we're running on Postgres 13+
+  `sed -I '' -E "s/^(#define POSTGIS_PGSQL_VERSION) .+/\\1 130/" sqldefines.h`
+  x = `cpp -traditional-cpp -w -P postgis.sql.in`
 end
 
 # Avoid wrapping transaction (its only used for the SET LOCAL and not necessary)
@@ -24,11 +30,15 @@ x.gsub!("DEFAULT 'POINT(0 0)'", 'DEFAULT NULL::geometry') # ST_Hexagon and ST_Sq
 # (as they'd require running the corresponding C code during planning)
 x.gsub!(/(,?\s+)((RESTRICT|JOIN) = gserialized_[\w_]+)/, '')
 
+# We also don't support the PostGIS index support functions for the same reason
+x.gsub!(/\s+SUPPORT postgis_index_supportfn/, '')
+
 # Avoid DO blocks that are used for validating the install environment
 # (we want to process this without requiring PL/pgSQL function execution)
 x.gsub!(/DO \$\$.*?\$\$( LANGUAGE 'plpgsql')?;/m, '')
 
-# TODO: This should probably be context-specific
-x.gsub!('@extschema@', 'public')
+# Run the same replacements as done by postgis/Makefile.in
+x.gsub!("'MODULE_PATHNAME'", "'" + MODULEPATH + "'")
+x.gsub!('@extschema@.', '')
 
 File.write('postgis_mock.sql', x)
