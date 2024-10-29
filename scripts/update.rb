@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-POSTGIS_VERSION = '3.2.1'
+POSTGIS_VERSION = '3.5.0'
 POSTGIS_MAJOR   = POSTGIS_VERSION.split('.')[0..1].join('.')
 MODULEPATH      = '$libdir/postgis-' + POSTGIS_MAJOR
 
@@ -11,10 +11,14 @@ TMP_DIR = File.join(__dir__, '..', 'tmp')
 
 x = nil
 
-Dir.chdir(File.join(TMP_DIR, 'postgis-' + POSTGIS_VERSION, 'postgis')) do
-  # Assume we're running on Postgres 13+
-  `sed -I '' -E "s/^(#define POSTGIS_PGSQL_VERSION) .+/\\1 130/" sqldefines.h`
-  x = `cpp -traditional-cpp -w -P postgis.sql.in`
+Dir.chdir(File.join(TMP_DIR, 'postgis-' + POSTGIS_VERSION)) do
+  `./configure --without-raster`
+
+  Dir.chdir('postgis') do
+    # Assume we're running on Postgres 13+
+    `sed -I '' -E "s/^(#define POSTGIS_PGSQL_VERSION) .+/\\1 130/" sqldefines.h`
+    x = `cpp -traditional-cpp -w -P postgis.sql.in`
+  end
 end
 
 # Avoid wrapping transaction (its only used for the SET LOCAL and not necessary)
