@@ -671,7 +671,7 @@ CREATE OR REPLACE FUNCTION geometry_within(geom1 geometry, geom2 geometry)
 -- Updated: 3.4.0 changed to use selectivity estimates
 CREATE OPERATOR @ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
-	COMMUTATOR = '~',
+	COMMUTATOR = '~'
 	-- Updated: 3.4.0 to use selectivity estimator,
 	-- Updated: 3.4.0 to use join selectivity estimator
 );
@@ -680,7 +680,7 @@ CREATE OPERATOR @ (
 -- Updated: 3.4.0 changed to use selectivity estimates
 CREATE OPERATOR ~ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
-	COMMUTATOR = '@',
+	COMMUTATOR = '@'
 	-- Updated: 3.4.0 to use specialized selectivity estimator,
 	-- Updated: 3.4.0 to use join specialized selectivity estimator
 );
@@ -3813,7 +3813,7 @@ CREATE OR REPLACE FUNCTION ST_MaximumInscribedCircle(geometry, OUT center geomet
 	COST 5000;
 
 -- Availability: 3.4.0
-CREATE OR REPLACE FUNCTION ST_LargestEmptyCircle(geom geometry, tolerance float8 DEFAULT 0.0, boundary geometry DEFAULT 'POINT EMPTY'::geometry, OUT center geometry, OUT nearest geometry, OUT radius double precision)
+CREATE OR REPLACE FUNCTION ST_LargestEmptyCircle(geom geometry, tolerance float8 DEFAULT 0.0, boundary geometry DEFAULT NULL::geometry::geometry, OUT center geometry, OUT nearest geometry, OUT radius double precision)
 	AS '$libdir/postgis-3.5', 'ST_LargestEmptyCircle'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 5000;
