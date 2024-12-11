@@ -46,19 +46,13 @@
 
 
 
--- INSTALL VERSION: '3.2.1'
+-- INSTALL VERSION: '3.5.0'
 
 
 
 
 
 -- Check that no other postgis is installed
-
-
-
--- Check that pgaudit is disabled or not installed
--- Running extension creation with pgaudit enabled will result in a
--- multi-gigabyte log storm for PgSQL <= 14
 
 
 
@@ -73,29 +67,29 @@ BEGIN
   -- Raises a NOTICE if it was deprecated in this version,
   -- a WARNING if in a previous version (only up to minor version checked)
   --
-	curver_text := '3.2.1';
-	IF split_part(curver_text,'.',1)::int > split_part(version,'.',1)::int OR
-	   ( split_part(curver_text,'.',1) = split_part(version,'.',1) AND
-		 split_part(curver_text,'.',2) != split_part(version,'.',2) )
+	curver_text := '3.5.0';
+	IF pg_catalog.split_part(curver_text,'.',1)::int > pg_catalog.split_part(version,'.',1)::int OR
+	   ( pg_catalog.split_part(curver_text,'.',1) = pg_catalog.split_part(version,'.',1) AND
+		 pg_catalog.split_part(curver_text,'.',2) != split_part(version,'.',2) )
 	THEN
 	  RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
 	ELSE
 	  RAISE DEBUG '% signature was deprecated in %. Please use %', oldname, version, newname;
 	END IF;
 END;
-$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT COST 500;
+$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT COST 250;
 
 -------------------------------------------------------------------
 --  SPHEROID TYPE
 -------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION spheroid_in(cstring)
 	RETURNS spheroid
-	AS '$libdir/postgis-3.2','ellipsoid_in'
+	AS '$libdir/postgis-3.5','ellipsoid_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION spheroid_out(spheroid)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2','ellipsoid_out'
+	AS '$libdir/postgis-3.5','ellipsoid_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 0.5.0
@@ -111,39 +105,39 @@ CREATE TYPE spheroid (
 -------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION geometry_in(cstring)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_in'
+	AS '$libdir/postgis-3.5','LWGEOM_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION geometry_out(geometry)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2','LWGEOM_out'
+	AS '$libdir/postgis-3.5','LWGEOM_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_typmod_in(cstring[])
 	RETURNS integer
-	AS '$libdir/postgis-3.2','geometry_typmod_in'
+	AS '$libdir/postgis-3.5','geometry_typmod_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_typmod_out(integer)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2','postgis_typmod_out'
+	AS '$libdir/postgis-3.5','postgis_typmod_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_analyze_nd'
+	AS '$libdir/postgis-3.5', 'gserialized_analyze_nd'
 	LANGUAGE 'c' VOLATILE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_recv(internal)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_recv'
+	AS '$libdir/postgis-3.5','LWGEOM_recv'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION geometry_send(geometry)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','LWGEOM_send'
+	AS '$libdir/postgis-3.5','LWGEOM_send'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 0.1.0
@@ -165,7 +159,7 @@ CREATE TYPE geometry (
 -- Special cast for enforcing the typmod restrictions
 CREATE OR REPLACE FUNCTION geometry(geometry, integer, boolean)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','geometry_enforce_typmod'
+	AS '$libdir/postgis-3.5','geometry_enforce_typmod'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
@@ -174,37 +168,37 @@ CREATE CAST (geometry AS geometry) WITH FUNCTION geometry(geometry, integer, boo
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION geometry(point)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','point_to_geometry'
+	AS '$libdir/postgis-3.5','point_to_geometry'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION point(geometry)
 	RETURNS point
-	AS '$libdir/postgis-3.2','geometry_to_point'
+	AS '$libdir/postgis-3.5','geometry_to_point'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION geometry(path)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','path_to_geometry'
+	AS '$libdir/postgis-3.5','path_to_geometry'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION path(geometry)
 	RETURNS path
-	AS '$libdir/postgis-3.2','geometry_to_path'
+	AS '$libdir/postgis-3.5','geometry_to_path'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION geometry(polygon)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','polygon_to_geometry'
+	AS '$libdir/postgis-3.5','polygon_to_geometry'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION polygon(geometry)
 	RETURNS polygon
-	AS '$libdir/postgis-3.2','geometry_to_polygon'
+	AS '$libdir/postgis-3.5','geometry_to_polygon'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE CAST (geometry AS point) WITH FUNCTION point(geometry);
@@ -221,28 +215,28 @@ CREATE CAST (polygon AS geometry) WITH FUNCTION geometry(polygon);
 -- PostGIS equivalent function: X(geometry)
 CREATE OR REPLACE FUNCTION ST_X(geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','LWGEOM_x_point'
+	AS '$libdir/postgis-3.5','LWGEOM_x_point'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE COST 1;
 
 -- PostGIS equivalent function: Y(geometry)
 CREATE OR REPLACE FUNCTION ST_Y(geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','LWGEOM_y_point'
+	AS '$libdir/postgis-3.5','LWGEOM_y_point'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Z(geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','LWGEOM_z_point'
+	AS '$libdir/postgis-3.5','LWGEOM_z_point'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_M(geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','LWGEOM_m_point'
+	AS '$libdir/postgis-3.5','LWGEOM_m_point'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE COST 1;
 
@@ -250,12 +244,12 @@ CREATE OR REPLACE FUNCTION ST_M(geometry)
 
 CREATE OR REPLACE FUNCTION box3d_in(cstring)
 	RETURNS box3d
-	AS '$libdir/postgis-3.2', 'BOX3D_in'
+	AS '$libdir/postgis-3.5', 'BOX3D_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION box3d_out(box3d)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2', 'BOX3D_out'
+	AS '$libdir/postgis-3.5', 'BOX3D_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 0.1.0
@@ -272,12 +266,12 @@ CREATE TYPE box3d (
 
 CREATE OR REPLACE FUNCTION box2d_in(cstring)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2','BOX2D_in'
+	AS '$libdir/postgis-3.5','BOX2D_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION box2d_out(box2d)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2','BOX2D_out'
+	AS '$libdir/postgis-3.5','BOX2D_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 0.8.2
@@ -298,13 +292,13 @@ CREATE TYPE box2d (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION box2df_in(cstring)
 	RETURNS box2df
-	AS '$libdir/postgis-3.2','box2df_in'
+	AS '$libdir/postgis-3.5','box2df_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION box2df_out(box2df)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2','box2df_out'
+	AS '$libdir/postgis-3.5','box2df_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
@@ -327,13 +321,13 @@ CREATE TYPE box2df (
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION gidx_in(cstring)
 	RETURNS gidx
-	AS '$libdir/postgis-3.2','gidx_in'
+	AS '$libdir/postgis-3.5','gidx_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION gidx_out(gidx)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2','gidx_out'
+	AS '$libdir/postgis-3.5','gidx_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
@@ -350,44 +344,50 @@ CREATE TYPE gidx (
 -------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION geometry_lt(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'lwgeom_lt'
+	AS '$libdir/postgis-3.5', 'lwgeom_lt'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION geometry_le(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'lwgeom_le'
+	AS '$libdir/postgis-3.5', 'lwgeom_le'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION geometry_gt(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'lwgeom_gt'
+	AS '$libdir/postgis-3.5', 'lwgeom_gt'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION geometry_ge(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'lwgeom_ge'
+	AS '$libdir/postgis-3.5', 'lwgeom_ge'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION geometry_eq(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'lwgeom_eq'
+	AS '$libdir/postgis-3.5', 'lwgeom_eq'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 1;
+
+CREATE OR REPLACE FUNCTION geometry_neq(geom1 geometry, geom2 geometry)
+	RETURNS bool
+	AS '$libdir/postgis-3.5', 'lwgeom_neq'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION geometry_cmp(geom1 geometry, geom2 geometry)
 	RETURNS integer
-	AS '$libdir/postgis-3.2', 'lwgeom_cmp'
+	AS '$libdir/postgis-3.5', 'lwgeom_cmp'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_sortsupport(internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2', 'lwgeom_sortsupport'
+	AS '$libdir/postgis-3.5', 'lwgeom_sortsupport'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 --
@@ -411,7 +411,14 @@ CREATE OPERATOR <= (
 -- Availability: 0.9.0
 CREATE OPERATOR = (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_eq,
-	COMMUTATOR = '=', -- we might implement a faster negator here
+	COMMUTATOR = '=', NEGATOR = '<>',
+	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
+);
+
+-- Availability: 3.5.0
+CREATE OPERATOR <> (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_neq,
+	COMMUTATOR = '<>', NEGATOR = '=',
 	RESTRICT = contsel, JOIN = contjoinsel, HASHES, MERGES
 );
 
@@ -448,7 +455,7 @@ CREATE OPERATOR CLASS btree_geometry_ops
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_hash(geometry)
 	RETURNS integer
-	AS '$libdir/postgis-3.2','lwgeom_hash'
+	AS '$libdir/postgis-3.5','lwgeom_hash'
 	LANGUAGE 'c' STRICT IMMUTABLE PARALLEL SAFE;
 
 -- Availability: 2.5.0
@@ -466,57 +473,57 @@ CREATE OPERATOR CLASS hash_geometry_ops
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_distance_2d(internal,geometry,int4)
+CREATE OR REPLACE FUNCTION geometry_gist_distance_2d(internal,geometry,integer)
 	RETURNS float8
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_distance_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_distance_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_consistent_2d(internal,geometry,int4)
+CREATE OR REPLACE FUNCTION geometry_gist_consistent_2d(internal,geometry,integer)
 	RETURNS bool
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_consistent_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_consistent_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_compress_2d(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2','gserialized_gist_compress_2d'
+	AS '$libdir/postgis-3.5','gserialized_gist_compress_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_penalty_2d(internal,internal,internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_penalty_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_penalty_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_picksplit_2d(internal, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_picksplit_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_picksplit_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_union_2d(bytea, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_union_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_union_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_same_2d(geom1 geometry, geom2 geometry, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_same_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_same_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_decompress_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_decompress_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION geometry_gist_sortsupport_2d(internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2', 'gserialized_gist_sortsupport_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_gist_sortsupport_2d'
 	LANGUAGE 'c' STRICT;
 
 -----------------------------------------------------------------------------
@@ -527,7 +534,7 @@ CREATE OR REPLACE FUNCTION geometry_gist_sortsupport_2d(internal)
 -- changes whether the estimate is in x/y only or in all available dimensions.
 CREATE OR REPLACE FUNCTION _postgis_selectivity(tbl regclass, att_name text, geom geometry, mode text default '2')
 	RETURNS float8
-	AS '$libdir/postgis-3.2', '_postgis_gserialized_sel'
+	AS '$libdir/postgis-3.5', '_postgis_gserialized_sel'
 	LANGUAGE 'c' STRICT PARALLEL SAFE;
 
 -- Availability: 2.1.0
@@ -537,7 +544,7 @@ CREATE OR REPLACE FUNCTION _postgis_selectivity(tbl regclass, att_name text, geo
 -- and evaluation in all available dimensions.
 CREATE OR REPLACE FUNCTION _postgis_join_selectivity(regclass, text, regclass, text, text default '2')
 	RETURNS float8
-	AS '$libdir/postgis-3.2', '_postgis_gserialized_joinsel'
+	AS '$libdir/postgis-3.5', '_postgis_gserialized_joinsel'
 	LANGUAGE 'c' STRICT PARALLEL SAFE;
 
 -- Availability: 2.1.0
@@ -546,7 +553,7 @@ CREATE OR REPLACE FUNCTION _postgis_join_selectivity(regclass, text, regclass, t
 -- or the ND statistics are returned.
 CREATE OR REPLACE FUNCTION _postgis_stats(tbl regclass, att_name text, text default '2')
 	RETURNS text
-	AS '$libdir/postgis-3.2', '_postgis_gserialized_stats'
+	AS '$libdir/postgis-3.5', '_postgis_gserialized_stats'
 	LANGUAGE 'c' STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
@@ -554,31 +561,31 @@ CREATE OR REPLACE FUNCTION _postgis_stats(tbl regclass, att_name text, text defa
 -- first page of the index (the head of the index)
 CREATE OR REPLACE FUNCTION _postgis_index_extent(tbl regclass, col text)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2','_postgis_gserialized_index_extent'
+	AS '$libdir/postgis-3.5','_postgis_gserialized_index_extent'
 	LANGUAGE 'c' STABLE STRICT;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION gserialized_gist_sel_2d (internal, oid, internal, int4)
+CREATE OR REPLACE FUNCTION gserialized_gist_sel_2d (internal, oid, internal, integer)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'gserialized_gist_sel_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_gist_sel_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION gserialized_gist_sel_nd (internal, oid, internal, int4)
+CREATE OR REPLACE FUNCTION gserialized_gist_sel_nd (internal, oid, internal, integer)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'gserialized_gist_sel_nd'
+	AS '$libdir/postgis-3.5', 'gserialized_gist_sel_nd'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_2d (internal, oid, internal, smallint)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'gserialized_gist_joinsel_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_gist_joinsel_2d'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_nd (internal, oid, internal, smallint)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'gserialized_gist_joinsel_nd'
+	AS '$libdir/postgis-3.5', 'gserialized_gist_joinsel_nd'
 	LANGUAGE 'c' PARALLEL SAFE;
 
 
@@ -593,7 +600,7 @@ CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_nd (internal, oid, internal,
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_overlaps_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_overlaps_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -607,7 +614,7 @@ CREATE OPERATOR && (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_same(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_same_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_same_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -623,14 +630,14 @@ CREATE OPERATOR ~= (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_distance_centroid(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'ST_Distance'
+	AS '$libdir/postgis-3.5', 'ST_Distance'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_distance_box(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'gserialized_distance_box_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_distance_box_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -649,35 +656,39 @@ CREATE OPERATOR <#> (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_contains(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_contains_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_contains_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_within(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_within_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_within_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 0.1.0
+-- Updated: 3.4.0 changed to use selectivity estimates
 CREATE OPERATOR @ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_within,
-	COMMUTATOR = '~',
-	RESTRICT = contsel, JOIN = contjoinsel
+	COMMUTATOR = '~'
+	-- Updated: 3.4.0 to use selectivity estimator,
+	-- Updated: 3.4.0 to use join selectivity estimator
 );
 
 -- Availability: 0.1.0
+-- Updated: 3.4.0 changed to use selectivity estimates
 CREATE OPERATOR ~ (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contains,
-	COMMUTATOR = '@',
-	RESTRICT = contsel, JOIN = contjoinsel
+	COMMUTATOR = '@'
+	-- Updated: 3.4.0 to use specialized selectivity estimator,
+	-- Updated: 3.4.0 to use join specialized selectivity estimator
 );
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_left(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_left_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_left_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -691,7 +702,7 @@ CREATE OPERATOR << (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overleft(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_overleft_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_overleft_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -704,7 +715,7 @@ CREATE OPERATOR &< (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_below(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_below_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_below_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -718,7 +729,7 @@ CREATE OPERATOR <<| (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overbelow(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_overbelow_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_overbelow_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -731,7 +742,7 @@ CREATE OPERATOR &<| (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overright(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_overright_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_overright_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -744,7 +755,7 @@ CREATE OPERATOR &> (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_right(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_right_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_right_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -758,7 +769,7 @@ CREATE OPERATOR >> (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overabove(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_overabove_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_overabove_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -771,7 +782,7 @@ CREATE OPERATOR |&> (
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_above(geom1 geometry, geom2 geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_above_2d'
+	AS '$libdir/postgis-3.5', 'gserialized_above_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -801,9 +812,13 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
 	OPERATOR        14       <#> FOR ORDER BY pg_catalog.float_ops,
 --
--- Note at 3.2: Sort support in bulk indexing not included in the
--- default opclass due to performance degredation in query
--- may be enabled in future versions.
+-- Sort support in bulk indexing not included in the default
+-- opclass for PostgreSQL versions <15 due to query performance
+-- degradation caused by GiST index page overlap.
+-- Since PostgreSQL 15 sorting build uses picksplit function to
+-- find better partitioning for index records. This allows to
+-- build indices performing similarly to those produced by default
+-- method while still reducing index build time significantly.
 --
 -- To enable sortsupport:
 --   alter operator family gist_geometry_ops_2d using gist
@@ -814,12 +829,9 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 --   alter operator family gist_geometry_ops_2d using gist
 --     drop function 11 (geometry);
 --
--- #if 130 >= 140
---	FUNCTION        11       geometry_gist_sortsupport_2d (internal),
--- #endif
---
-	FUNCTION        8        geometry_gist_distance_2d (internal, geometry, int4),
-	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
+
+	FUNCTION        8        geometry_gist_distance_2d (internal, geometry, integer),
+	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, integer),
 	FUNCTION        2        geometry_gist_union_2d (bytea, internal),
 	FUNCTION        3        geometry_gist_compress_2d (internal),
 	FUNCTION        4        geometry_gist_decompress_2d (internal),
@@ -836,51 +848,51 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_consistent_nd(internal,geometry,int4)
+CREATE OR REPLACE FUNCTION geometry_gist_consistent_nd(internal,geometry,integer)
 	RETURNS bool
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_consistent'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_consistent'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_compress_nd(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2','gserialized_gist_compress'
+	AS '$libdir/postgis-3.5','gserialized_gist_compress'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_penalty_nd(internal,internal,internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_penalty'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_penalty'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_picksplit_nd(internal, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_picksplit'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_picksplit'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_union_nd(bytea, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_union'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_union'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_same_nd(geometry, geometry, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_same'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_same'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_decompress'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_decompress'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 1;
 
@@ -891,7 +903,7 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overlaps_nd(geometry, geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_overlaps'
+	AS '$libdir/postgis-3.5' ,'gserialized_overlaps'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -904,7 +916,7 @@ CREATE OPERATOR &&& (
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_contains_nd(geometry, geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_contains'
+	AS '$libdir/postgis-3.5' ,'gserialized_contains'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -917,7 +929,7 @@ CREATE OPERATOR ~~ (
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_within_nd(geometry, geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_within'
+	AS '$libdir/postgis-3.5' ,'gserialized_within'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -930,7 +942,7 @@ CREATE OPERATOR @@ (
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_same_nd(geometry, geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_same'
+	AS '$libdir/postgis-3.5' ,'gserialized_same'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -943,7 +955,7 @@ CREATE OPERATOR ~~= (
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION geometry_distance_centroid_nd(geometry,geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'gserialized_distance_nd'
+	AS '$libdir/postgis-3.5', 'gserialized_distance_nd'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.2.0
@@ -961,9 +973,9 @@ CREATE OPERATOR <<->> (
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION geometry_distance_cpa(geometry, geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'ST_DistanceCPA'
+	AS '$libdir/postgis-3.5', 'ST_DistanceCPA'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2.0
 CREATE OPERATOR |=| (
@@ -973,9 +985,9 @@ CREATE OPERATOR |=| (
 );
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION geometry_gist_distance_nd(internal,geometry,int4)
+CREATE OR REPLACE FUNCTION geometry_gist_distance_nd(internal,geometry,integer)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'gserialized_gist_distance'
+	AS '$libdir/postgis-3.5', 'gserialized_gist_distance'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 1;
 
@@ -995,8 +1007,8 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 	-- Availability: 2.2.0
 	OPERATOR        20       |=| FOR ORDER BY pg_catalog.float_ops,
 	-- Availability: 2.2.0
-	FUNCTION        8        geometry_gist_distance_nd (internal, geometry, int4),
-	FUNCTION        1        geometry_gist_consistent_nd (internal, geometry, int4),
+	FUNCTION        8        geometry_gist_distance_nd (internal, geometry, integer),
+	FUNCTION        1        geometry_gist_consistent_nd (internal, geometry, integer),
 	FUNCTION        2        geometry_gist_union_nd (bytea, internal),
 	FUNCTION        3        geometry_gist_compress_nd (internal),
 	FUNCTION        4        geometry_gist_decompress_nd (internal),
@@ -1007,14 +1019,14 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ShiftLongitude(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_longitude_shift'
+	AS '$libdir/postgis-3.5', 'LWGEOM_longitude_shift'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_WrapX(geom geometry, wrap float8, move float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_WrapX'
+	AS '$libdir/postgis-3.5', 'ST_WrapX'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1025,42 +1037,42 @@ CREATE OR REPLACE FUNCTION ST_WrapX(geom geometry, wrap float8, move float8)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_XMin(box3d)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','BOX3D_xmin'
+	AS '$libdir/postgis-3.5','BOX3D_xmin'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_YMin(box3d)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','BOX3D_ymin'
+	AS '$libdir/postgis-3.5','BOX3D_ymin'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_ZMin(box3d)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','BOX3D_zmin'
+	AS '$libdir/postgis-3.5','BOX3D_zmin'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_XMax(box3d)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','BOX3D_xmax'
+	AS '$libdir/postgis-3.5','BOX3D_xmax'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_YMax(box3d)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','BOX3D_ymax'
+	AS '$libdir/postgis-3.5','BOX3D_ymax'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','BOX3D_zmax'
+	AS '$libdir/postgis-3.5','BOX3D_zmax'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -1071,28 +1083,28 @@ CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Expand(box2d,float8)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2', 'BOX2D_expand'
+	AS '$libdir/postgis-3.5', 'BOX2D_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Expand(box box2d, dx float8, dy float8)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2', 'BOX2D_expand'
+	AS '$libdir/postgis-3.5', 'BOX2D_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_getbbox(geometry)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2','LWGEOM_to_BOX2DF'
+	AS '$libdir/postgis-3.5','LWGEOM_to_BOX2DF'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakeBox2d(geom1 geometry, geom2 geometry)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2', 'BOX2D_construct'
+	AS '$libdir/postgis-3.5', 'BOX2D_construct'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -1101,23 +1113,26 @@ CREATE OR REPLACE FUNCTION ST_MakeBox2d(geom1 geometry, geom2 geometry)
 -----------------------------------------------------------------------
 
 -- Availability: 2.3.0
+-- Changed: 3.4.0 drop security definer
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text,boolean) RETURNS box2d AS
-	'$libdir/postgis-3.2', 'gserialized_estimated_extent'
-	LANGUAGE 'c' STABLE STRICT SECURITY DEFINER;
+	'$libdir/postgis-3.5', 'gserialized_estimated_extent'
+	LANGUAGE 'c' STABLE STRICT;
 
 -- Availability: 2.1.0
+-- Changed: 3.4.0 drop security definer
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
-	'$libdir/postgis-3.2', 'gserialized_estimated_extent'
-	LANGUAGE 'c' STABLE STRICT SECURITY DEFINER;
+	'$libdir/postgis-3.5', 'gserialized_estimated_extent'
+	LANGUAGE 'c' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
 
 -- Availability: 2.1.0
+-- Changed: 3.4.0 drop security definer
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text) RETURNS box2d AS
-	'$libdir/postgis-3.2', 'gserialized_estimated_extent'
-	LANGUAGE 'c' STABLE STRICT SECURITY DEFINER;
+	'$libdir/postgis-3.5', 'gserialized_estimated_extent'
+	LANGUAGE 'c' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
@@ -1166,30 +1181,30 @@ LANGUAGE 'plpgsql' STABLE STRICT PARALLEL SAFE;
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_addbbox(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_addBBOX'
+	AS '$libdir/postgis-3.5','LWGEOM_addBBOX'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_dropbbox(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_dropBBOX'
+	AS '$libdir/postgis-3.5','LWGEOM_dropBBOX'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'LWGEOM_hasBBOX'
+	AS '$libdir/postgis-3.5', 'LWGEOM_hasBBOX'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_QuantizeCoordinates(g geometry, prec_x int, prec_y int DEFAULT NULL, prec_z int DEFAULT NULL, prec_m int DEFAULT NULL)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_QuantizeCoordinates'
+	AS '$libdir/postgis-3.5', 'ST_QuantizeCoordinates'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 ------------------------------------------------------------------------
 -- DEBUG
@@ -1197,29 +1212,29 @@ CREATE OR REPLACE FUNCTION ST_QuantizeCoordinates(g geometry, prec_x int, prec_y
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_MemSize(geometry)
-	RETURNS int4
-	AS '$libdir/postgis-3.2', 'LWGEOM_mem_size'
+	RETURNS integer
+	AS '$libdir/postgis-3.5', 'LWGEOM_mem_size'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Summary(geometry)
 	RETURNS text
-	AS '$libdir/postgis-3.2', 'LWGEOM_summary'
+	AS '$libdir/postgis-3.5', 'LWGEOM_summary'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_NPoints(geometry)
-	RETURNS int4
-	AS '$libdir/postgis-3.2', 'LWGEOM_npoints'
+	RETURNS integer
+	AS '$libdir/postgis-3.5', 'LWGEOM_npoints'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_NRings(geometry)
-	RETURNS int4
-	AS '$libdir/postgis-3.2', 'LWGEOM_nrings'
+	RETURNS integer
+	AS '$libdir/postgis-3.5', 'LWGEOM_nrings'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1229,56 +1244,56 @@ CREATE OR REPLACE FUNCTION ST_NRings(geometry)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DLength(geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'LWGEOM_length_linestring'
+	AS '$libdir/postgis-3.5', 'LWGEOM_length_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Length2d(geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'LWGEOM_length2d_linestring'
+	AS '$libdir/postgis-3.5', 'LWGEOM_length2d_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: length2d(geometry)
 CREATE OR REPLACE FUNCTION ST_Length(geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'LWGEOM_length2d_linestring'
+	AS '$libdir/postgis-3.5', 'LWGEOM_length2d_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability in 2.2.0
 CREATE OR REPLACE FUNCTION ST_LengthSpheroid(geometry, spheroid)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','LWGEOM_length_ellipsoid_linestring'
+	AS '$libdir/postgis-3.5','LWGEOM_length_ellipsoid_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_Length2DSpheroid(geometry, spheroid)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','LWGEOM_length2d_ellipsoid'
+	AS '$libdir/postgis-3.5','LWGEOM_length2d_ellipsoid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DPerimeter(geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'LWGEOM_perimeter_poly'
+	AS '$libdir/postgis-3.5', 'LWGEOM_perimeter_poly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_perimeter2d(geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'LWGEOM_perimeter2d_poly'
+	AS '$libdir/postgis-3.5', 'LWGEOM_perimeter2d_poly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: perimeter2d(geometry)
 CREATE OR REPLACE FUNCTION ST_Perimeter(geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'LWGEOM_perimeter2d_poly'
+	AS '$libdir/postgis-3.5', 'LWGEOM_perimeter2d_poly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1286,79 +1301,107 @@ CREATE OR REPLACE FUNCTION ST_Perimeter(geometry)
 -- Deprecation in 1.3.4
 CREATE OR REPLACE FUNCTION ST_Area2D(geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'ST_Area'
+	AS '$libdir/postgis-3.5', 'ST_Area'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: area(geometry)
 CREATE OR REPLACE FUNCTION ST_Area(geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','ST_Area'
+	AS '$libdir/postgis-3.5','ST_Area'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_IsPolygonCW(geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','ST_IsPolygonCW'
+	AS '$libdir/postgis-3.5','ST_IsPolygonCW'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_IsPolygonCCW(geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','ST_IsPolygonCCW'
+	AS '$libdir/postgis-3.5','ST_IsPolygonCCW'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry,spheroid)
+CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry, spheroid)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2','LWGEOM_distance_ellipsoid'
+	AS '$libdir/postgis-3.5','LWGEOM_distance_ellipsoid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500; --upped this
+	COST 250;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION ST_DistanceSpheroid(geom1 geometry, geom2 geometry)
+	RETURNS FLOAT8
+	AS '$libdir/postgis-3.5','LWGEOM_distance_ellipsoid'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
 
 -- Minimum distance. 2D only.
 CREATE OR REPLACE FUNCTION ST_Distance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'ST_Distance'
+	AS '$libdir/postgis-3.5', 'ST_Distance'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_PointInsideCircle(geometry,float8,float8,float8)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'LWGEOM_inside_circle_point'
+	AS '$libdir/postgis-3.5', 'LWGEOM_inside_circle_point'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'LWGEOM_azimuth'
+	AS '$libdir/postgis-3.5', 'LWGEOM_azimuth'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 50;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_Project(geom1 geometry, distance float8, azimuth float8)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'geometry_project_direction'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 50;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_Project(geom1 geometry, geom2 geometry, distance float8)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'geometry_project_geometry'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt4 geometry default NULL::geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'LWGEOM_angle'
+	AS '$libdir/postgis-3.5', 'LWGEOM_angle'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 50;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineExtend(geom geometry, distance_forward float8, distance_backward float8 DEFAULT 0.0)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'geometry_line_extend'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: Future
 -- CREATE OR REPLACE FUNCTION _ST_DistanceRectTree(g1 geometry, g2 geometry)
 --	RETURNS float8
---	AS '$libdir/postgis-3.2', 'ST_DistanceRectTree'
+--	AS '$libdir/postgis-3.5', 'ST_DistanceRectTree'
 --	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
---  COST 500;
+--  COST 250;
 
 -- Availability: Future
 -- CREATE OR REPLACE FUNCTION _ST_DistanceRectTreeCached(g1 geometry, g2 geometry)
 --	RETURNS float8
---	AS '$libdir/postgis-3.2', 'ST_DistanceRectTreeCached'
+--	AS '$libdir/postgis-3.5', 'ST_DistanceRectTreeCached'
 --	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
---  COST 500;
+--  COST 250;
 
 ------------------------------------------------------------------------
 -- MISC
@@ -1367,7 +1410,7 @@ CREATE OR REPLACE FUNCTION ST_Angle(pt1 geometry, pt2 geometry, pt3 geometry, pt
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Force2D(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_2d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1376,7 +1419,7 @@ CREATE OR REPLACE FUNCTION ST_Force2D(geometry)
 -- Replaces ST_Force3DZ(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DZ(geom geometry, zvalue float8 default 0.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_3dz'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_3dz'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1394,7 +1437,7 @@ CREATE OR REPLACE FUNCTION ST_Force3D(geom geometry, zvalue float8 default 0.0)
 -- Replaces ST_Force3DM(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force3DM(geom geometry, mvalue float8 default 0.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_3dm'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_3dm'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1403,126 +1446,126 @@ CREATE OR REPLACE FUNCTION ST_Force3DM(geom geometry, mvalue float8 default 0.0)
 -- Replaces ST_Force4D(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Force4D(geom geometry, zvalue float8 default 0.0, mvalue float8 default 0.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_4d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_4d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceCollection(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_collection'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_collection'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_CollectionExtract'
+	AS '$libdir/postgis-3.5', 'ST_CollectionExtract'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_CollectionExtract'
+	AS '$libdir/postgis-3.5', 'ST_CollectionExtract'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CollectionHomogenize(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_CollectionHomogenize'
+	AS '$libdir/postgis-3.5', 'ST_CollectionHomogenize'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Multi(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_multi'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_multi'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ForceCurve(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_curve'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_curve'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceSFS(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_sfs'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_sfs'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_ForceSFS(geometry, version text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_sfs'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_sfs'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Expand(box3d,float8)
 	RETURNS box3d
-	AS '$libdir/postgis-3.2', 'BOX3D_expand'
+	AS '$libdir/postgis-3.5', 'BOX3D_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Expand(box box3d, dx float8, dy float8, dz float8 DEFAULT 0)
 	RETURNS box3d
-	AS '$libdir/postgis-3.2', 'BOX3D_expand'
+	AS '$libdir/postgis-3.5', 'BOX3D_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Expand(geometry,float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_expand'
+	AS '$libdir/postgis-3.5', 'LWGEOM_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Expand(geom geometry, dx float8, dy float8, dz float8 DEFAULT 0, dm float8 DEFAULT 0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_expand'
+	AS '$libdir/postgis-3.5', 'LWGEOM_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: envelope(geometry)
 CREATE OR REPLACE FUNCTION ST_Envelope(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_envelope'
+	AS '$libdir/postgis-3.5', 'LWGEOM_envelope'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_BoundingDiagonal(geom geometry, fits boolean DEFAULT false)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_BoundingDiagonal'
+	AS '$libdir/postgis-3.5', 'ST_BoundingDiagonal'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Reverse(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_reverse'
+	AS '$libdir/postgis-3.5', 'LWGEOM_reverse'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_Scroll(geometry, geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Scroll'
+	AS '$libdir/postgis-3.5', 'ST_Scroll'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_ForcePolygonCW(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_clockwise_poly'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_clockwise_poly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1536,147 +1579,161 @@ CREATE OR REPLACE FUNCTION ST_ForcePolygonCCW(geometry)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_ForceRHR(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_force_clockwise_poly'
+	AS '$libdir/postgis-3.5', 'LWGEOM_force_clockwise_poly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_noop(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_noop'
+	AS '$libdir/postgis-3.5', 'LWGEOM_noop'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION postgis_geos_noop(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'GEOSnoop'
+	AS '$libdir/postgis-3.5', 'GEOSnoop'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Normalize(geom geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Normalize'
+	AS '$libdir/postgis-3.5', 'ST_Normalize'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION ST_zmflag(geometry)
 	RETURNS smallint
-	AS '$libdir/postgis-3.2', 'LWGEOM_zmflag'
+	AS '$libdir/postgis-3.5', 'LWGEOM_zmflag'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_NDims(geometry)
 	RETURNS smallint
-	AS '$libdir/postgis-3.2', 'LWGEOM_ndims'
+	AS '$libdir/postgis-3.5', 'LWGEOM_ndims'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 1;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_HasZ(geometry)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5', 'LWGEOM_hasz'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 1;
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_HasM(geometry)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5', 'LWGEOM_hasm'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asEWKT'
+	AS '$libdir/postgis-3.5','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.1.0
-CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry, int4)
+CREATE OR REPLACE FUNCTION ST_AsEWKT(geometry, integer)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asEWKT'
+	AS '$libdir/postgis-3.5','LWGEOM_asEWKT'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geom geometry, prec int4 default NULL, prec_z int4 default NULL, prec_m int4 default NULL, with_sizes boolean default NULL, with_boxes boolean default NULL)
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geom geometry, prec integer default NULL, prec_z integer default NULL, prec_m integer default NULL, with_sizes boolean default NULL, with_boxes boolean default NULL)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','TWKBFromLWGEOM'
+	AS '$libdir/postgis-3.5','TWKBFromLWGEOM'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_AsTWKB(geom geometry[], ids bigint[], prec int4 default NULL, prec_z int4 default NULL, prec_m int4 default NULL, with_sizes boolean default NULL, with_boxes boolean default NULL)
+CREATE OR REPLACE FUNCTION ST_AsTWKB(geom geometry[], ids bigint[], prec integer default NULL, prec_z integer default NULL, prec_m integer default NULL, with_sizes boolean default NULL, with_boxes boolean default NULL)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','TWKBFromLWGEOMArray'
+	AS '$libdir/postgis-3.5','TWKBFromLWGEOMArray'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry)
 	RETURNS BYTEA
-	AS '$libdir/postgis-3.2','WKBFromLWGEOM'
+	AS '$libdir/postgis-3.5','WKBFromLWGEOM'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsHEXEWKB(geometry)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asHEXEWKB'
+	AS '$libdir/postgis-3.5','LWGEOM_asHEXEWKB'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsHEXEWKB(geometry, text)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asHEXEWKB'
+	AS '$libdir/postgis-3.5','LWGEOM_asHEXEWKB'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsEWKB(geometry,text)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','WKBFromLWGEOM'
+	AS '$libdir/postgis-3.5','WKBFromLWGEOM'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsLatLonText(geom geometry, tmpl text DEFAULT '')
 	RETURNS text
-	AS '$libdir/postgis-3.2','LWGEOM_to_latlon'
+	AS '$libdir/postgis-3.5','LWGEOM_to_latlon'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromEWKB(bytea)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOMFromEWKB'
+	AS '$libdir/postgis-3.5','LWGEOMFromEWKB'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomFromEWKB(bytea)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOMFromEWKB'
+	AS '$libdir/postgis-3.5','LWGEOMFromEWKB'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_GeomFromTWKB(bytea)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOMFromTWKB'
+	AS '$libdir/postgis-3.5','LWGEOMFromTWKB'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeomFromEWKT(text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','parse_WKT_lwgeom'
+	AS '$libdir/postgis-3.5','parse_WKT_lwgeom'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomFromEWKT(text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','parse_WKT_lwgeom'
+	AS '$libdir/postgis-3.5','parse_WKT_lwgeom'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_cache_bbox()
 	RETURNS trigger
-	AS '$libdir/postgis-3.2', 'cache_bbox'
+	AS '$libdir/postgis-3.5', 'cache_bbox'
 	LANGUAGE 'c';
 
 ------------------------------------------------------------------------
@@ -1686,84 +1743,84 @@ CREATE OR REPLACE FUNCTION postgis_cache_bbox()
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePoint(float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makepoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makepoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePoint(float8, float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makepoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makepoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePoint(float8, float8, float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makepoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makepoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.3.4
 CREATE OR REPLACE FUNCTION ST_MakePointM(float8, float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makepoint3dm'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makepoint3dm'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DMakeBox(geom1 geometry, geom2 geometry)
 	RETURNS box3d
-	AS '$libdir/postgis-3.2', 'BOX3D_construct'
+	AS '$libdir/postgis-3.5', 'BOX3D_construct'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_MakeLine (geometry[])
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makeline_garray'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makeline_garray'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineFromMultiPoint(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_line_from_mpoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_line_from_mpoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakeLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makeline'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makeline'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AddPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_addpoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_addpoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AddPoint(geom1 geometry, geom2 geometry, integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_addpoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_addpoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_RemovePoint(geometry, integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_removepoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_removepoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SetPoint(geometry, integer, geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_setpoint_linestring'
+	AS '$libdir/postgis-3.5', 'LWGEOM_setpoint_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1771,73 +1828,96 @@ CREATE OR REPLACE FUNCTION ST_SetPoint(geometry, integer, geometry)
 -- Availability: 2.0.0 - made srid optional
 CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integer DEFAULT 0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_MakeEnvelope'
+	AS '$libdir/postgis-3.5', 'ST_MakeEnvelope'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.0.0
 -- Changed: 3.1.0 - add margin=0.0 parameter
+-- Replaces ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_TileEnvelope(zoom integer, x integer, y integer, bounds geometry DEFAULT NULL::geometry, margin float8 DEFAULT 0.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_TileEnvelope'
+	AS '$libdir/postgis-3.5', 'ST_TileEnvelope'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry, geometry[])
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makepoly'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makepoly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makepoly'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makepoly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_BuildArea(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_BuildArea'
+	AS '$libdir/postgis-3.5', 'ST_BuildArea'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_Polygonize (geometry[])
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'polygonize_garray'
+	AS '$libdir/postgis-3.5', 'polygonize_garray'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_ClusterIntersecting(geometry[])
 	RETURNS geometry[]
-	AS '$libdir/postgis-3.2',  'clusterintersecting_garray'
+	AS '$libdir/postgis-3.5',  'clusterintersecting_garray'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2
 CREATE OR REPLACE FUNCTION ST_ClusterWithin(geometry[], float8)
 	RETURNS geometry[]
-	AS '$libdir/postgis-3.2',  'cluster_within_distance_garray'
+	AS '$libdir/postgis-3.5',  'cluster_within_distance_garray'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.3
 CREATE OR REPLACE FUNCTION ST_ClusterDBSCAN (geometry, eps float8, minpoints int)
 	RETURNS int
-	AS '$libdir/postgis-3.2', 'ST_ClusterDBSCAN'
+	AS '$libdir/postgis-3.5', 'ST_ClusterDBSCAN'
 	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
-	COST 10000;
+	COST 5000;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ClusterWithinWin(geometry, distance float8)
+	RETURNS int
+	AS '$libdir/postgis-3.5', 'ST_ClusterWithinWin'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ClusterIntersectingWin(geometry)
+	RETURNS int
+	AS '$libdir/postgis-3.5', 'ST_ClusterIntersectingWin'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'linemerge'
+	AS '$libdir/postgis-3.5', 'linemerge'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION ST_LineMerge(geometry, boolean)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'linemerge'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
 
 -----------------------------------------------------------------------------
 -- Affine transforms
@@ -1846,7 +1926,7 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_affine'
+	AS '$libdir/postgis-3.5', 'LWGEOM_affine'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1916,14 +1996,14 @@ CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8)
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_Scale(geometry,geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Scale'
+	AS '$libdir/postgis-3.5', 'ST_Scale'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_Scale(geometry,geometry,origin geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Scale'
+	AS '$libdir/postgis-3.5', 'ST_Scale'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -1963,35 +2043,35 @@ CREATE TYPE geometry_dump AS (
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Dump(geometry)
 	RETURNS SETOF geometry_dump
-	AS '$libdir/postgis-3.2', 'LWGEOM_dump'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dump'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 	RETURNS SETOF geometry_dump
-	AS '$libdir/postgis-3.2', 'LWGEOM_dump_rings'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dump_rings'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -----------------------------------------------------------------------
 -- ST_DumpPoints()
 -----------------------------------------------------------------------
--- This function mimicks that of ST_Dump for collections, but this function
+-- This function mimics that of ST_Dump for collections, but this function
 -- that returns a path and all the points that make up a particular geometry.
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
 	RETURNS SETOF geometry_dump
-	AS '$libdir/postgis-3.2', 'LWGEOM_dumppoints'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dumppoints'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_DumpSegments(geometry)
 	RETURNS SETOF geometry_dump
-	AS '$libdir/postgis-3.2', 'LWGEOM_dumpsegments'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dumpsegments'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -------------------------------------------------------------------
 -- SPATIAL_REF_SYS
@@ -2012,7 +2092,7 @@ CREATE TABLE spatial_ref_sys (
 -- views in the database that contain geometry columns. This function
 -- is a simple wrapper for populate_geometry_columns(oid).  In essence,
 -- this function ensures every geometry column in the database has the
--- appropriate spatial contraints (for tables) and exists in the
+-- appropriate spatial constraints (for tables) and exists in the
 -- geometry_columns table.
 -- Availability: 1.4.0
 -- Revised: 2.0.0 -- no longer deletes from geometry_columns
@@ -2095,7 +2175,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- If the provided oid is for a table, this function tries to determine
 -- the srid, dimension, and geometry type of the all geometries
--- in the table, adding contraints as necessary to the table.  If
+-- in the table, adding constraints as necessary to the table.  If
 -- successful, an appropriate row is inserted into the geometry_columns
 -- table, otherwise, the exception is caught and an error notice is
 -- raised describing the problem. (This is so the wrapper function
@@ -2246,8 +2326,8 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- Geometry types (except GEOMETRY) are checked for consistency using a CHECK constraint.
 -- Uses an ALTER TABLE command to add the geometry column to the table.
--- Addes a row to geometry_columns.
--- Addes a constraint on the table that all the geometries MUST have the same
+-- Adds a row to geometry_columns.
+-- Adds a constraint on the table that all the geometries MUST have the same
 -- SRID. Checks the coord_dimension to make sure its between 0 and 3.
 -- Should also check the precision grid (future expansion).
 --
@@ -2744,7 +2824,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- FIND_SRID( <schema>, <table>, <geom col> )
 -----------------------------------------------------------------------
 -- Changed: 2.1.8 improve performance
-CREATE OR REPLACE FUNCTION find_srid(varchar,varchar,varchar) RETURNS int4 AS
+CREATE OR REPLACE FUNCTION find_srid(varchar,varchar,varchar) RETURNS integer AS
 $$
 DECLARE
 	schem varchar =  $1;
@@ -2781,30 +2861,89 @@ CREATE OR REPLACE FUNCTION get_proj4_from_srid(integer) RETURNS text AS
 	LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_SetSRID(geom geometry, srid int4)
+CREATE OR REPLACE FUNCTION ST_SetSRID(geom geometry, srid integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_set_srid'
+	AS '$libdir/postgis-3.5','LWGEOM_set_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION ST_SRID(geom geometry)
-	RETURNS int4
-	AS '$libdir/postgis-3.2','LWGEOM_get_srid'
+	RETURNS integer
+	AS '$libdir/postgis-3.5','LWGEOM_get_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION postgis_transform_geometry(geom geometry, text, text, int)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','transform_geom'
+	AS '$libdir/postgis-3.5','transform_geom'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
+
+------------------------------------------------------------------------
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_codes(auth_name text)
+	RETURNS SETOF TEXT
+	AS '$libdir/postgis-3.5', 'postgis_srs_codes'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs(auth_name text, auth_srid text)
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS '$libdir/postgis-3.5', 'postgis_srs_entry'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_all()
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS '$libdir/postgis-3.5', 'postgis_srs_entry_all'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_srs_search(
+		bounds geometry,
+		authname text DEFAULT 'EPSG')
+	RETURNS TABLE(
+		auth_name TEXT,
+		auth_srid TEXT,
+		srname TEXT,
+		srtext TEXT,
+		proj4text TEXT,
+		point_sw GEOMETRY,
+		point_ne GEOMETRY
+		)
+	AS '$libdir/postgis-3.5', 'postgis_srs_search'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+
+------------------------------------------------------------------------
 
 -- PostGIS equivalent of old function: transform(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_Transform(geometry,integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','transform'
+	AS '$libdir/postgis-3.5','transform'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, to_proj text)
@@ -2812,14 +2951,14 @@ CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, to_proj text)
 	'SELECT postgis_transform_geometry($1, proj4text, $2, 0)
 	FROM spatial_ref_sys WHERE srid=ST_SRID($1);'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_proj text)
 	RETURNS geometry AS
 	'SELECT postgis_transform_geometry($1, $2, $3, 0)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid integer)
@@ -2827,59 +2966,93 @@ CREATE OR REPLACE FUNCTION ST_Transform(geom geometry, from_proj text, to_srid i
 	'SELECT postgis_transform_geometry($1, $2, proj4text, $3)
 	FROM spatial_ref_sys WHERE srid=$3;'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
+
+CREATE OR REPLACE FUNCTION postgis_transform_pipeline_geometry(geom geometry, pipeline text, forward boolean, to_srid integer)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5','transform_pipeline_geom'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+-- Availability: 3.4.0
+
+CREATE OR REPLACE FUNCTION ST_TransformPipeline(geom geometry, pipeline text, to_srid integer DEFAULT 0)
+	RETURNS geometry AS
+	'SELECT postgis_transform_pipeline_geometry($1, $2, TRUE, $3)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 3.4.0
+
+CREATE OR REPLACE FUNCTION ST_InverseTransformPipeline(geom geometry, pipeline text, to_srid integer DEFAULT 0)
+	RETURNS geometry AS
+	'SELECT postgis_transform_pipeline_geometry($1, $2, FALSE, $3)'
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 3.4.0
 
 -----------------------------------------------------------------------
 -- POSTGIS_VERSION()
 -----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION postgis_version() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION postgis_liblwgeom_version() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION postgis_proj_version() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' IMMUTABLE
+	COST 1;
+
+CREATE OR REPLACE FUNCTION postgis_proj_compiled_version() RETURNS text
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE
 	COST 1;
 
 CREATE OR REPLACE FUNCTION postgis_wagyu_version() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE
 	COST 1;
 
 --
 -- IMPORTANT:
--- Starting at 1.1.0 this function is used by postgis_proc_upgrade.pl
+-- Starting at 1.1.0 this function is used by create_upgrade.pl
 -- to extract version of postgis being installed.
--- Do not modify this w/out also changing postgis_proc_upgrade.pl
+-- Do not modify this w/out also changing create_upgrade.pl
 --
 CREATE OR REPLACE FUNCTION postgis_scripts_installed() RETURNS text
-	AS $$ SELECT trim('3.2.1'::text || $rev$ 5fae8e5 $rev$) AS version $$
+	AS $$ SELECT trim('3.5.0'::text || $rev$ d2c3ca4 $rev$) AS version $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION postgis_lib_version() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE; -- a new lib will require a new session
 
 -- NOTE: from 1.1.0 to 1.5.x this was the same of postgis_lib_version()
 -- NOTE: from 2.0.0 up it includes postgis revision
 CREATE OR REPLACE FUNCTION postgis_scripts_released() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION postgis_geos_version() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' IMMUTABLE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION postgis_geos_compiled_version() RETURNS text
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE;
 
 --- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION postgis_lib_revision() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE;
 
 --- Availability: 2.0.0
@@ -2895,32 +3068,36 @@ LANGUAGE 'sql' IMMUTABLE SECURITY INVOKER;
 
 
 CREATE OR REPLACE FUNCTION postgis_libxml_version() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION postgis_scripts_build_date() RETURNS text
-	AS 'SELECT ''2022-02-13 00:56:00''::text AS version'
+	AS 'SELECT ''2024-12-03 22:55:56''::text AS version'
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION postgis_lib_build_date() RETURNS text
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION _postgis_scripts_pgsql_version() RETURNS text
-	AS 'SELECT ''96''::text AS version'
+	AS 'SELECT ''160''::text AS version'
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION _postgis_pgsql_version() RETURNS text
 AS $$
-	SELECT CASE WHEN pg_catalog.split_part(s,'.',1)::integer > 9 THEN pg_catalog.split_part(s,'.',1) || '0' ELSE pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2) END AS v
-	FROM pg_catalog.substring(pg_catalog.version(), 'PostgreSQL ([0-9\.]+)') AS s;
+	SELECT CASE WHEN pg_catalog.split_part(s,'.',1)::integer > 9 THEN pg_catalog.split_part(s,'.',1) || '0'
+	ELSE pg_catalog.split_part(s,'.', 1) || pg_catalog.split_part(s,'.', 2) END AS v
+	FROM pg_catalog.substring(version(), E'PostgreSQL ([0-9\\.]+)') AS s;
 $$ LANGUAGE 'sql' STABLE;
 
 -- Availability: 2.5.0
+-- Changed: 3.3.0 support for upgrades from any PostGIS version
 -- Changed: 3.0.1 install from unpackaged should include postgis schema #4581
 -- Changed: 3.0.0 also upgrade postgis_raster if it exists
-CREATE OR REPLACE FUNCTION postgis_extensions_upgrade() RETURNS text
-AS $$
+-- Changed: 3.4.0 to add target_version argument
+-- Replaces postgis_extensions_upgrade() deprecated in 3.4.0
+CREATE OR REPLACE FUNCTION postgis_extensions_upgrade(target_version text DEFAULT NULL) RETURNS text
+AS $BODY$
 DECLARE
 	rec record;
 	sql text;
@@ -2939,10 +3116,15 @@ BEGIN
 		)
 		ORDER BY length(name) -- this is to make sure 'postgis' is first !
 	LOOP --{
-		IF rec.installed_version IS NULL THEN
+
+		IF target_version IS NULL THEN
+			target_version := rec.default_version;
+		END IF;
+
+		IF rec.installed_version IS NULL THEN --{
 			-- If the support installed by available extension
 			-- is found unpackaged, we package it
-			IF
+			IF --{
 				 -- PostGIS is always available (this function is part of it)
 				 rec.name = 'postgis'
 
@@ -2951,7 +3133,7 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_type
 							WHERE typname = 'raster' ) )
 
-				 -- PostGIS SFCGAL is availble if
+				 -- PostGIS SFCGAL is available if
 				 -- 'postgis_sfcgal_version' function exists
 				 OR ( rec.name = 'postgis_sfcgal' AND EXISTS (
 							SELECT 1 FROM pg_catalog.pg_proc
@@ -2969,7 +3151,7 @@ BEGIN
 							SELECT 1 FROM pg_catalog.pg_class c
 							JOIN pg_catalog.pg_namespace n ON (c.relnamespace = n.oid )
 							WHERE n.nspname = 'tiger' AND c.relname = 'geocode_settings') )
-			THEN
+			THEN --}{ -- the code is unpackaged
 				-- Force install in same schema as postgis
 				SELECT INTO var_schema n.nspname
 				  FROM pg_namespace n, pg_proc p
@@ -2978,61 +3160,55 @@ BEGIN
 				  LIMIT 1;
 				IF rec.name NOT IN('postgis_topology', 'postgis_tiger_geocoder')
 				THEN
-					sql := pg_catalog.format(
+					sql := format(
 							  'CREATE EXTENSION %1$I SCHEMA %2$I VERSION unpackaged;'
 							  'ALTER EXTENSION %1$I UPDATE TO %3$I',
-							  rec.name, var_schema, rec.default_version);
+							  rec.name, var_schema, target_version);
 				ELSE
-					sql := pg_catalog.format(
+					sql := format(
 							 'CREATE EXTENSION %1$I VERSION unpackaged;'
 							 'ALTER EXTENSION %1$I UPDATE TO %2$I',
-							 rec.name, rec.default_version);
+							 rec.name, target_version);
 				END IF;
-				RAISE NOTICE 'Packaging extension %', rec.name;
+				RAISE NOTICE 'Packaging and updating %', rec.name;
 				RAISE DEBUG '%', sql;
 				EXECUTE sql;
 			ELSE
-				RAISE NOTICE 'Extension % is not available or not packagable for some reason', rec.name;
-			END IF;
-		ELSIF rec.default_version != rec.installed_version
-		THEN
-			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						pg_catalog.quote_ident(rec.default_version)   || ';';
-			RAISE NOTICE 'Updating extension % from % to %',
-				rec.name, rec.installed_version, rec.default_version;
+				RAISE DEBUG 'Skipping % (not in use)', rec.name;
+			END IF; --}
+		ELSE -- The code is already packaged, upgrade it --}{
+			sql = format(
+				'ALTER EXTENSION %1$I UPDATE TO "ANY";'
+				'ALTER EXTENSION %1$I UPDATE TO %2$I',
+				rec.name, target_version
+				);
+			RAISE NOTICE 'Updating extension % %', rec.name, rec.installed_version;
 			RAISE DEBUG '%', sql;
 			EXECUTE sql;
-		ELSIF (rec.default_version = rec.installed_version AND rec.installed_version ILIKE '%dev') OR
-			(_postgis_pgsql_version() != _postgis_scripts_pgsql_version())
-		THEN
-			-- we need to upgrade to next and back
-			RAISE NOTICE 'Updating extension % %',
-				rec.name, rec.installed_version;
-			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						pg_catalog.quote_ident(rec.default_version || 'next')   || ';';
-			RAISE DEBUG '%', sql;
-			EXECUTE sql;
-			sql = 'ALTER EXTENSION ' || rec.name || ' UPDATE TO ' ||
-						pg_catalog.quote_ident(rec.default_version)   || ';';
-			RAISE DEBUG '%', sql;
-			EXECUTE sql;
-		END IF;
+		END IF; --}
 
 	END LOOP; --}
 
-	RETURN 'Upgrade completed, run SELECT postgis_full_version(); for details';
+	RETURN format(
+		'Upgrade to version %s completed, run SELECT postgis_full_version(); for details',
+		target_version
+	);
+
 
 END
-$$ LANGUAGE plpgsql VOLATILE;
+$BODY$ LANGUAGE plpgsql VOLATILE;
 
 -- Changed: 3.0.0
+-- Changed: 3.4.0 to include geos compiled version
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
 	libver text;
 	librev text;
 	projver text;
+	projver_compiled text;
 	geosver text;
+	geosver_compiled text;
 	sfcgalver text;
 	gdalver text := NULL;
 	libxmlver text;
@@ -3055,6 +3231,8 @@ BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
+	SELECT postgis_geos_compiled_version() INTO geosver_compiled;
+	SELECT postgis_proj_compiled_version() INTO projver_compiled;
 	SELECT postgis_libjson_version() INTO json_lib_ver;
 	SELECT postgis_libprotobuf_version() INTO protobuf_lib_ver;
 	SELECT postgis_wagyu_version() INTO wagyu_lib_ver;
@@ -3067,7 +3245,7 @@ BEGIN
 			RAISE DEBUG 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
 	END;
 	BEGIN
-		SELECT postgis_sfcgal_version() INTO sfcgalver;
+		SELECT postgis_sfcgal_full_version() INTO sfcgalver;
 		BEGIN
 			SELECT postgis_sfcgal_scripts_installed() INTO sfcgal_scr_ver;
 		EXCEPTION
@@ -3141,6 +3319,10 @@ BEGIN
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';
+		IF (string_to_array(geosver, '.'))[1:2] != (string_to_array(geosver_compiled, '.'))[1:2]
+		THEN
+			fullver = format('%s (compiled against GEOS %s)', fullver, geosver_compiled);
+		END IF;
 	END IF;
 
 	IF  sfcgalver IS NOT NULL THEN
@@ -3149,6 +3331,10 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
+		IF (string_to_array(projver, '.'))[1:3] != (string_to_array(projver_compiled, '.'))[1:3]
+		THEN
+			fullver = format('%s (compiled against PROJ %s)', fullver, projver_compiled);
+		END IF;
 	END IF;
 
 	IF  gdalver IS NOT NULL THEN
@@ -3226,43 +3412,43 @@ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION box2d(geometry)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2','LWGEOM_to_BOX2D'
+	AS '$libdir/postgis-3.5','LWGEOM_to_BOX2D'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION box3d(geometry)
 	RETURNS box3d
-	AS '$libdir/postgis-3.2','LWGEOM_to_BOX3D'
+	AS '$libdir/postgis-3.5','LWGEOM_to_BOX3D'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION box(geometry)
 	RETURNS box
-	AS '$libdir/postgis-3.2','LWGEOM_to_BOX'
+	AS '$libdir/postgis-3.5','LWGEOM_to_BOX'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION box2d(box3d)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2','BOX3D_to_BOX2D'
+	AS '$libdir/postgis-3.5','BOX3D_to_BOX2D'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION box3d(box2d)
 	RETURNS box3d
-	AS '$libdir/postgis-3.2','BOX2D_to_BOX3D'
+	AS '$libdir/postgis-3.5','BOX2D_to_BOX3D'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION box(box3d)
 	RETURNS box
-	AS '$libdir/postgis-3.2','BOX3D_to_BOX'
+	AS '$libdir/postgis-3.5','BOX3D_to_BOX'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION text(geometry)
 	RETURNS text
-	AS '$libdir/postgis-3.2','LWGEOM_to_text'
+	AS '$libdir/postgis-3.5','LWGEOM_to_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -3270,37 +3456,37 @@ CREATE OR REPLACE FUNCTION text(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION box3dtobox(box3d)
 	RETURNS box
-	AS '$libdir/postgis-3.2','BOX3D_to_BOX'
+	AS '$libdir/postgis-3.5','BOX3D_to_BOX'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION geometry(box2d)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','BOX2D_to_LWGEOM'
+	AS '$libdir/postgis-3.5','BOX2D_to_LWGEOM'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION geometry(box3d)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','BOX3D_to_LWGEOM'
+	AS '$libdir/postgis-3.5','BOX3D_to_LWGEOM'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION geometry(text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','parse_WKT_lwgeom'
+	AS '$libdir/postgis-3.5','parse_WKT_lwgeom'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION geometry(bytea)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_from_bytea'
+	AS '$libdir/postgis-3.5','LWGEOM_from_bytea'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION bytea(geometry)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','LWGEOM_to_bytea'
+	AS '$libdir/postgis-3.5','LWGEOM_to_bytea'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -3329,50 +3515,50 @@ CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Simplify(geometry, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_simplify2d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_simplify2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_Simplify(geometry, float8, boolean)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_simplify2d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_simplify2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_SimplifyVW(geometry, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_SetEffectiveArea'
+	AS '$libdir/postgis-3.5', 'LWGEOM_SetEffectiveArea'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_SetEffectiveArea(geometry,  float8 default -1, integer default 1)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_SetEffectiveArea'
+	AS '$libdir/postgis-3.5', 'LWGEOM_SetEffectiveArea'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_FilterByM(geometry, double precision, double precision default null, boolean default false)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_FilterByM'
+	AS '$libdir/postgis-3.5', 'LWGEOM_FilterByM'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_ChaikinSmoothing(geometry, integer default 1, boolean default false)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_ChaikinSmoothing'
+	AS '$libdir/postgis-3.5', 'LWGEOM_ChaikinSmoothing'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- ST_SnapToGrid(input, xoff, yoff, xsize, ysize)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8, float8, float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_snaptogrid'
+	AS '$libdir/postgis-3.5', 'LWGEOM_snaptogrid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -3396,16 +3582,16 @@ CREATE OR REPLACE FUNCTION ST_SnapToGrid(geometry, float8)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SnapToGrid(geom1 geometry, geom2 geometry, float8, float8, float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_snaptogrid_pointoff'
+	AS '$libdir/postgis-3.5', 'LWGEOM_snaptogrid_pointoff'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Segmentize(geometry, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_segmentize2d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_segmentize2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 ---------------------------------------------------------------
 -- LRS
@@ -3414,37 +3600,37 @@ CREATE OR REPLACE FUNCTION ST_Segmentize(geometry, float8)
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(geometry, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_line_interpolate_point'
+	AS '$libdir/postgis-3.5', 'LWGEOM_line_interpolate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_LineInterpolatePoints(geometry, float8, repeat boolean DEFAULT true)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_line_interpolate_point'
+	AS '$libdir/postgis-3.5', 'LWGEOM_line_interpolate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineSubstring(geometry, float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_line_substring'
+	AS '$libdir/postgis-3.5', 'LWGEOM_line_substring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'LWGEOM_line_locate_point'
+	AS '$libdir/postgis-3.5', 'LWGEOM_line_locate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_AddMeasure'
+	AS '$libdir/postgis-3.5', 'ST_AddMeasure'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 ---------------------------------------------------------------
 -- TEMPORAL
@@ -3453,30 +3639,30 @@ CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ClosestPointOfApproach(geometry, geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'ST_ClosestPointOfApproach'
+	AS '$libdir/postgis-3.5', 'ST_ClosestPointOfApproach'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_DistanceCPA(geometry, geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'ST_DistanceCPA'
+	AS '$libdir/postgis-3.5', 'ST_DistanceCPA'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_CPAWithin(geometry, geometry, float8)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'ST_CPAWithin'
+	AS '$libdir/postgis-3.5', 'ST_CPAWithin'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_IsValidTrajectory(geometry)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'ST_IsValidTrajectory'
+	AS '$libdir/postgis-3.5', 'ST_IsValidTrajectory'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 ---------------------------------------------------------------
 -- GEOS
@@ -3486,85 +3672,86 @@ CREATE OR REPLACE FUNCTION ST_IsValidTrajectory(geometry)
 -- Replaces ST_Intersection(geometry, geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Intersection(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_Intersection'
+	AS '$libdir/postgis-3.5','ST_Intersection'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
+-- Replaces ST_Buffer(geometry, float8) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geom geometry, radius float8, options text DEFAULT '')
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','buffer'
+	AS '$libdir/postgis-3.5','buffer'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Buffer(geom geometry, radius float8, quadsegs integer)
 	RETURNS geometry
 	AS $$ SELECT ST_Buffer($1, $2, CAST('quad_segs='||CAST($3 AS text) as text)) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_MinimumBoundingRadius(geometry, OUT center geometry, OUT radius double precision)
-	AS '$libdir/postgis-3.2', 'ST_MinimumBoundingRadius'
+	AS '$libdir/postgis-3.5', 'ST_MinimumBoundingRadius'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_MinimumBoundingCircle(inputgeom geometry, segs_per_quarter integer DEFAULT 48)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_MinimumBoundingCircle'
+	AS '$libdir/postgis-3.5', 'ST_MinimumBoundingCircle'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_OrientedEnvelope(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_OrientedEnvelope'
+	AS '$libdir/postgis-3.5', 'ST_OrientedEnvelope'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_OffsetCurve(line geometry, distance float8, params text DEFAULT '')
 RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_OffsetCurve'
+	AS '$libdir/postgis-3.5','ST_OffsetCurve'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.3.0
 -- Changed: 3.0.0
 CREATE OR REPLACE FUNCTION ST_GeneratePoints(area geometry, npoints integer)
 RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_GeneratePoints'
+	AS '$libdir/postgis-3.5','ST_GeneratePoints'
 	LANGUAGE 'c' VOLATILE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION ST_GeneratePoints(area geometry, npoints integer, seed integer)
 RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_GeneratePoints'
+	AS '$libdir/postgis-3.5','ST_GeneratePoints'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- PostGIS equivalent function: convexhull(geometry)
 CREATE OR REPLACE FUNCTION ST_ConvexHull(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','convexhull'
+	AS '$libdir/postgis-3.5','convexhull'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.3.3
 CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','topologypreservesimplify'
+	AS '$libdir/postgis-3.5','topologypreservesimplify'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
 	RETURNS text
-	AS '$libdir/postgis-3.2', 'isvalidreason'
+	AS '$libdir/postgis-3.5', 'isvalidreason'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.0.0
 CREATE TYPE valid_detail AS (
@@ -3574,14 +3761,14 @@ CREATE TYPE valid_detail AS (
 );
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_IsValidDetail(geom geometry, flags int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_IsValidDetail(geom geometry, flags integer DEFAULT 0)
 	RETURNS valid_detail
-	AS '$libdir/postgis-3.2', 'isvaliddetail'
+	AS '$libdir/postgis-3.5', 'isvaliddetail'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry, int4)
+CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry, integer)
 	RETURNS text
 	AS $$
 	SELECT CASE WHEN valid THEN 'Valid Geometry' ELSE reason END FROM (
@@ -3589,73 +3776,79 @@ CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry, int4)
 	) foo
 	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_IsValid(geometry, int4)
+CREATE OR REPLACE FUNCTION ST_IsValid(geometry, integer)
 	RETURNS boolean
 	AS 'SELECT (ST_isValidDetail($1, $2)).valid'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'hausdorffdistance'
+	AS '$libdir/postgis-3.5', 'hausdorffdistance'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geom1 geometry, geom2 geometry, float8)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'hausdorffdistancedensify'
+	AS '$libdir/postgis-3.5', 'hausdorffdistancedensify'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION ST_FrechetDistance(geom1 geometry, geom2 geometry, float8 default -1)
 	RETURNS FLOAT8
-	AS '$libdir/postgis-3.2', 'ST_FrechetDistance'
+	AS '$libdir/postgis-3.5', 'ST_FrechetDistance'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_MaximumInscribedCircle(geometry, OUT center geometry, OUT nearest geometry, OUT radius double precision)
-	AS '$libdir/postgis-3.2', 'ST_MaximumInscribedCircle'
+	AS '$libdir/postgis-3.5', 'ST_MaximumInscribedCircle'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LargestEmptyCircle(geom geometry, tolerance float8 DEFAULT 0.0, boundary geometry DEFAULT NULL::geometry::geometry, OUT center geometry, OUT nearest geometry, OUT radius double precision)
+	AS '$libdir/postgis-3.5', 'ST_LargestEmptyCircle'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
 
 -- PostGIS equivalent function: ST_difference(geom1 geometry, geom2 geometry)
 -- Changed: 3.1.0 to add gridSize default argument
 -- Replaces ST_Difference(geometry, geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Difference(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_Difference'
+	AS '$libdir/postgis-3.5','ST_Difference'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- PostGIS equivalent function: boundary(geometry)
 CREATE OR REPLACE FUNCTION ST_Boundary(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','boundary'
+	AS '$libdir/postgis-3.5','boundary'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_Points(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Points'
+	AS '$libdir/postgis-3.5', 'ST_Points'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- PostGIS equivalent function: symdifference(geom1 geometry, geom2 geometry)
 -- Changed: 3.1.0 to add gridSize default argument
 -- Replaces ST_SymDifference(geometry, geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_SymDifference(geom1 geometry, geom2 geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_SymDifference'
+	AS '$libdir/postgis-3.5','ST_SymDifference'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_SymmetricDifference(geom1 geometry, geom2 geometry)
@@ -3665,25 +3858,25 @@ CREATE OR REPLACE FUNCTION ST_SymmetricDifference(geom1 geometry, geom2 geometry
 
 CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_Union'
+	AS '$libdir/postgis-3.5','ST_Union'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_Union(geom1 geometry, geom2 geometry, gridSize float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_Union'
+	AS '$libdir/postgis-3.5','ST_Union'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.0.0
 -- Changed: 3.1.0 to add gridSize default argument
 -- Replaces ST_UnaryUnion(geometry) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry, gridSize float8 DEFAULT -1.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_UnaryUnion'
+	AS '$libdir/postgis-3.5','ST_UnaryUnion'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- ST_RemoveRepeatedPoints(in geometry)
 --
@@ -3694,31 +3887,31 @@ CREATE OR REPLACE FUNCTION ST_UnaryUnion(geometry, gridSize float8 DEFAULT -1.0)
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_RemoveRepeatedPoints(geom geometry, tolerance float8 default 0.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_RemoveRepeatedPoints'
+	AS '$libdir/postgis-3.5', 'ST_RemoveRepeatedPoints'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_ClipByBox2d(geom geometry, box box2d)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_ClipByBox2d'
+	AS '$libdir/postgis-3.5', 'ST_ClipByBox2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.2.0
 -- Changed: 3.1.0 to add gridSize default argument
 -- Replaces ST_Subdivide(geometry, integer) deprecated in 3.1.0
 CREATE OR REPLACE FUNCTION ST_Subdivide(geom geometry, maxvertices integer DEFAULT 256, gridSize float8 DEFAULT -1.0)
 	RETURNS setof geometry
-	AS '$libdir/postgis-3.2', 'ST_Subdivide'
+	AS '$libdir/postgis-3.5', 'ST_Subdivide'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_ReducePrecision(geom geometry, gridsize float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_ReducePrecision'
+	AS '$libdir/postgis-3.5', 'ST_ReducePrecision'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 --------------------------------------------------------------------------------
 -- ST_CleanGeometry / ST_MakeValid
@@ -3734,15 +3927,15 @@ CREATE OR REPLACE FUNCTION ST_ReducePrecision(geom geometry, gridsize float8)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_MakeValid(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_MakeValid'
+	AS '$libdir/postgis-3.5', 'ST_MakeValid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_MakeValid'
+	AS '$libdir/postgis-3.5', 'ST_MakeValid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- ST_CleanGeometry(in geometry)
 --
@@ -3752,7 +3945,7 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
 --	- Obeying the RHR (if polygonal)
 --	- Simplified of consecutive duplicated points
 -- Ensuring:
---	- No input vertexes are discarded (except consecutive repeated ones)
+--	- No input vertices are discarded (except consecutive repeated ones)
 --	- Output geometry type matches input
 --
 -- Returns NULL on failure.
@@ -3760,9 +3953,9 @@ CREATE OR REPLACE FUNCTION ST_MakeValid(geom geometry, params text)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_CleanGeometry'
+	AS '$libdir/postgis-3.5', 'ST_CleanGeometry'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 --------------------------------------------------------------------------------
 -- ST_Split
@@ -3780,9 +3973,9 @@ CREATE OR REPLACE FUNCTION ST_CleanGeometry(geometry)
 --
 CREATE OR REPLACE FUNCTION ST_Split(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Split'
+	AS '$libdir/postgis-3.5', 'ST_Split'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 --------------------------------------------------------------------------------
 -- ST_SharedPaths
@@ -3802,9 +3995,9 @@ CREATE OR REPLACE FUNCTION ST_Split(geom1 geometry, geom2 geometry)
 --
 CREATE OR REPLACE FUNCTION ST_SharedPaths(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_SharedPaths'
+	AS '$libdir/postgis-3.5', 'ST_SharedPaths'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 --------------------------------------------------------------------------------
 -- ST_Snap
@@ -3818,9 +4011,9 @@ CREATE OR REPLACE FUNCTION ST_SharedPaths(geom1 geometry, geom2 geometry)
 --
 CREATE OR REPLACE FUNCTION ST_Snap(geom1 geometry, geom2 geometry, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Snap'
+	AS '$libdir/postgis-3.5', 'ST_Snap'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 --------------------------------------------------------------------------------
 -- ST_RelateMatch
@@ -3834,9 +4027,9 @@ CREATE OR REPLACE FUNCTION ST_Snap(geom1 geometry, geom2 geometry, float8)
 --
 CREATE OR REPLACE FUNCTION ST_RelateMatch(text, text)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'ST_RelateMatch'
+	AS '$libdir/postgis-3.5', 'ST_RelateMatch'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 --------------------------------------------------------------------------------
 -- ST_Node
@@ -3852,15 +4045,15 @@ CREATE OR REPLACE FUNCTION ST_RelateMatch(text, text)
 --
 CREATE OR REPLACE FUNCTION ST_Node(g geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Node'
+	AS '$libdir/postgis-3.5', 'ST_Node'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 --------------------------------------------------------------------------------
 -- ST_DelaunayTriangles
 --------------------------------------------------------------------------------
 
--- ST_DelaunayTriangles(g1 geometry, tolerance float8, flags int4)
+-- ST_DelaunayTriangles(g1 geometry, tolerance float8, flags integer)
 --
 -- Builds Delaunay triangulation out of geometry vertices.
 --
@@ -3873,11 +4066,29 @@ CREATE OR REPLACE FUNCTION ST_Node(g geometry)
 --
 -- Availability: 2.1.0
 --
-CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DEFAULT 0.0, flags int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DEFAULT 0.0, flags integer DEFAULT 0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_DelaunayTriangles'
+	AS '$libdir/postgis-3.5', 'ST_DelaunayTriangles'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
+
+--------------------------------------------------------------------------------
+-- ST_TriangulatePolygon
+--------------------------------------------------------------------------------
+
+-- ST_TriangulatePolygon(g1 geometry)
+--
+-- Builds a triangulation that respects the boundaries of the polygon.
+--
+-- Returns a collection of triangular polygons.
+--
+-- Availability: 3.3.0
+--
+CREATE OR REPLACE FUNCTION ST_TriangulatePolygon(g1 geometry)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'ST_TriangulatePolygon'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
 
 --------------------------------------------------------------------------------
 -- _ST_Voronoi
@@ -3905,9 +4116,9 @@ CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DE
 
 CREATE OR REPLACE FUNCTION _ST_Voronoi(g1 geometry, clip geometry DEFAULT NULL, tolerance float8 DEFAULT 0.0, return_polygons boolean DEFAULT true)
 	   RETURNS geometry
-	   AS '$libdir/postgis-3.2', 'ST_Voronoi'
+	   AS '$libdir/postgis-3.5', 'ST_Voronoi'
 	   LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	   COST 10000;
+	   COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_VoronoiPolygons(g1 geometry, tolerance float8 DEFAULT 0.0, extend_to geometry DEFAULT NULL)
 	   RETURNS geometry
@@ -3926,21 +4137,21 @@ CREATE OR REPLACE FUNCTION ST_VoronoiLines(g1 geometry, tolerance float8 DEFAULT
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_CombineBBox(box3d,geometry)
 	RETURNS box3d
-	AS '$libdir/postgis-3.2', 'BOX3D_combine'
+	AS '$libdir/postgis-3.5', 'BOX3D_combine'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_CombineBBox(box3d,box3d)
 	RETURNS box3d
-	AS '$libdir/postgis-3.2', 'BOX3D_combine_BOX3D'
+	AS '$libdir/postgis-3.5', 'BOX3D_combine_BOX3D'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_CombineBbox(box2d,geometry)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2', 'BOX2D_combine'
+	AS '$libdir/postgis-3.5', 'BOX2D_combine'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 1;
 
@@ -3970,7 +4181,7 @@ CREATE AGGREGATE ST_3DExtent(geometry)(
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Collect(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_collect'
+	AS '$libdir/postgis-3.5', 'LWGEOM_collect'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
@@ -3987,7 +4198,7 @@ CREATE AGGREGATE ST_MemCollect(geometry)(
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Collect(geometry[])
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_collect_garray'
+	AS '$libdir/postgis-3.5', 'LWGEOM_collect_garray'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -4006,7 +4217,7 @@ CREATE AGGREGATE ST_MemUnion(geometry) (
 -- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry)
 	RETURNS internal
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 50;
 
@@ -4014,7 +4225,7 @@ CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry)
 -- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float8)
 	RETURNS internal
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 50;
 
@@ -4022,85 +4233,133 @@ CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float
 -- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_accum_transfn(internal, geometry, float8, int)
 	RETURNS internal
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.4.0
 -- Changed: 2.5.0 use 'internal' transfer type
-CREATE OR REPLACE FUNCTION pgis_geometry_union_finalfn(internal)
-	RETURNS geometry
-	AS '$libdir/postgis-3.2'
-	LANGUAGE 'c' PARALLEL SAFE
-	COST 10000;
-
--- Availability: 1.4.0
--- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_collect_finalfn(internal)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.4.0
 -- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_polygonize_finalfn(internal)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.2
 -- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_clusterintersecting_finalfn(internal)
 	RETURNS geometry[]
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.2
 -- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_clusterwithin_finalfn(internal)
 	RETURNS geometry[]
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.4.0
 -- Changed: 2.5.0 use 'internal' transfer type
 CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(internal)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2'
+	AS '$libdir/postgis-3.5'
 	LANGUAGE 'c' PARALLEL SAFE
-	COST 500;
+	COST 250;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION pgis_geometry_coverageunion_finalfn(internal)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' PARALLEL SAFE
+	COST 250;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_transfn(internal, geometry)
+	RETURNS internal
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	COST 1;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_transfn(internal, geometry, float8)
+	RETURNS internal
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	COST 50;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_combinefn(internal, internal)
+	RETURNS internal
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	COST 1;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_serialfn(internal)
+	RETURNS bytea
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE STRICT
+	COST 1;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_deserialfn(bytea, internal)
+	RETURNS internal
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE STRICT
+	COST 1;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION pgis_geometry_union_parallel_finalfn(internal)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE STRICT
+	COST 5000;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_Union (geometry[])
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','pgis_union_geometry_array'
+	AS '$libdir/postgis-3.5','pgis_union_geometry_array'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 -- Changed but upgrader helper no touch: 2.4.0 marked parallel safe
 -- we don't want to force drop of this agg since its often used in views
 -- parallel handling dealt with in postgis_after_upgrade.sql
 -- Changed: 2.5.0 use 'internal' stype
-CREATE AGGREGATE ST_Union (geometry) (
-	sfunc = pgis_geometry_accum_transfn,
+-- Changed: 3.3.0 parallel scan support
+CREATE AGGREGATE ST_Union(geometry) (
+	sfunc = pgis_geometry_union_parallel_transfn,
 	stype = internal,
 	parallel = safe,
-	finalfunc = pgis_geometry_union_finalfn
-	);
+	serialfunc = pgis_geometry_union_parallel_serialfn,
+	deserialfunc = pgis_geometry_union_parallel_deserialfn,
+	combinefunc = pgis_geometry_union_parallel_combinefn,
+	finalfunc = pgis_geometry_union_parallel_finalfn
+);
 
 -- Availability: 3.1.0
+-- Changed: 3.3.0 parallel scan support
 CREATE AGGREGATE ST_Union (geometry, gridSize float8) (
-	sfunc = pgis_geometry_accum_transfn,
+	sfunc = pgis_geometry_union_parallel_transfn,
 	stype = internal,
 	parallel = safe,
-	finalfunc = pgis_geometry_union_finalfn
+	serialfunc = pgis_geometry_union_parallel_serialfn,
+	deserialfunc = pgis_geometry_union_parallel_deserialfn,
+	combinefunc = pgis_geometry_union_parallel_combinefn,
+	finalfunc = pgis_geometry_union_parallel_finalfn
 	);
-
 
 -- Availability: 1.2.2
 -- Changed: 2.4.0: marked parallel safe
@@ -4152,6 +4411,40 @@ CREATE AGGREGATE ST_MakeLine (geometry) (
 	FINALFUNC = pgis_geometry_makeline_finalfn
 	);
 
+
+-----------------------------------------------------------------------
+-- Polygonal coverage functions
+---------------------------------------------------------------------
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageUnion (geometry[])
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'ST_CoverageUnion'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+-- Availability: 3.4.0
+CREATE AGGREGATE ST_CoverageUnion (geometry) (
+	SFUNC = pgis_geometry_accum_transfn,
+	STYPE = internal,
+	PARALLEL = safe,
+	FINALFUNC = pgis_geometry_coverageunion_finalfn
+	);
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageSimplify (geom geometry, tolerance float8, simplifyBoundary boolean default true)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'ST_CoverageSimplify'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_CoverageInvalidEdges (geom geometry, tolerance float8 default 0.0)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'ST_CoverageInvalidEdges'
+	LANGUAGE 'c' IMMUTABLE STRICT WINDOW PARALLEL SAFE
+	COST 5000;
+
 --------------------------------------------------------------------------------
 
 -- Availability: 2.3.0
@@ -4159,37 +4452,37 @@ CREATE AGGREGATE ST_MakeLine (geometry) (
 -- Replaces ST_ClusterKMeans(geometry, integer) deprecated in 3.2.0
 CREATE OR REPLACE FUNCTION ST_ClusterKMeans(geom geometry, k integer, max_radius float8 default null)
 	RETURNS integer
-	AS '$libdir/postgis-3.2', 'ST_ClusterKMeans'
+	AS '$libdir/postgis-3.5', 'ST_ClusterKMeans'
 	LANGUAGE 'c' VOLATILE STRICT WINDOW
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry)
 	RETURNS text
-	AS '$libdir/postgis-3.2','relate_full'
+	AS '$libdir/postgis-3.5','relate_full'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, int4)
+CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, integer)
 	RETURNS text
-	AS '$libdir/postgis-3.2','relate_full'
+	AS '$libdir/postgis-3.5','relate_full'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
--- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry,text)
-CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry,text)
+-- PostGIS equivalent function: relate(geom1 geometry, geom2 geometry, text)
+CREATE OR REPLACE FUNCTION ST_Relate(geom1 geometry, geom2 geometry, text)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','relate_pattern'
+	AS '$libdir/postgis-3.5','relate_pattern'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- PostGIS equivalent function: disjoint(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Disjoint(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','disjoint'
+	AS '$libdir/postgis-3.5','disjoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -----------------------------------------------------------------------------
 -- Non-indexed functions (see above for public indexed variants)
@@ -4197,65 +4490,65 @@ CREATE OR REPLACE FUNCTION ST_Disjoint(geom1 geometry, geom2 geometry)
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION _ST_LineCrossingDirection(line1 geometry, line2 geometry)
 	RETURNS integer
-	AS '$libdir/postgis-3.2', 'ST_LineCrossingDirection'
+	AS '$libdir/postgis-3.5', 'ST_LineCrossingDirection'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.3.4
 CREATE OR REPLACE FUNCTION _ST_DWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_dwithin'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dwithin'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Touches(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','touches'
+	AS '$libdir/postgis-3.5','touches'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','ST_Intersects'
+	AS '$libdir/postgis-3.5','ST_Intersects'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Crosses(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','crosses'
+	AS '$libdir/postgis-3.5','crosses'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','contains'
+	AS '$libdir/postgis-3.5','contains'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION _ST_ContainsProperly(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','containsproperly'
+	AS '$libdir/postgis-3.5','containsproperly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Covers(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'covers'
+	AS '$libdir/postgis-3.5', 'covers'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_CoveredBy(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'coveredby'
+	AS '$libdir/postgis-3.5', 'coveredby'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
@@ -4266,49 +4559,47 @@ CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION _ST_Overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','overlaps'
+	AS '$libdir/postgis-3.5','overlaps'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION _ST_DFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_dfullywithin'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dfullywithin'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION _ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_dwithin3d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dwithin3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION _ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_dfullywithin3d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dfullywithin3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'ST_3DIntersects'
+	AS '$libdir/postgis-3.5', 'ST_3DIntersects'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION _ST_OrderingEquals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_same'
+	AS '$libdir/postgis-3.5', 'LWGEOM_same'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION _ST_Equals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','ST_Equals'
+	AS '$libdir/postgis-3.5','ST_Equals'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -----------------------------------------------------------------------------
-
-
 
 -----------------------------------------------------------------------------
 -- Planner Support Functions
@@ -4316,7 +4607,7 @@ CREATE OR REPLACE FUNCTION _ST_Equals(geom1 geometry, geom2 geometry)
 -- Availability 3.0.0
 CREATE OR REPLACE FUNCTION postgis_index_supportfn (internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'postgis_index_supportfn'
+	AS '$libdir/postgis-3.5', 'postgis_index_supportfn'
 	LANGUAGE 'c';
 
 -----------------------------------------------------------------------------
@@ -4324,118 +4615,117 @@ CREATE OR REPLACE FUNCTION postgis_index_supportfn (internal)
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(line1 geometry, line2 geometry)
 	RETURNS integer
-	AS '$libdir/postgis-3.2', 'ST_LineCrossingDirection'
+	AS '$libdir/postgis-3.5', 'ST_LineCrossingDirection'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
--- Availability: 1.3.4
--- Replaces ST_DWithin(text, text, float8) deprecated in 3.0.0
-CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry,float8)
+-- Availability: 1.3.0
+-- Changed: 2.0.0 added parameter names
+-- TODO: encode deprecation of the version with no parameter names ?
+CREATE OR REPLACE FUNCTION ST_DWithin(geom1 geometry, geom2 geometry, float8)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_dwithin'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dwithin'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Touches(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','touches'
+	AS '$libdir/postgis-3.5','touches'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Intersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','ST_Intersects'
+	AS '$libdir/postgis-3.5','ST_Intersects'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','crosses'
+	AS '$libdir/postgis-3.5','crosses'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','contains'
+	AS '$libdir/postgis-3.5','contains'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_ContainsProperly(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','containsproperly'
+	AS '$libdir/postgis-3.5','containsproperly'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','within'
+	AS '$libdir/postgis-3.5','within'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Covers(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'covers'
+	AS '$libdir/postgis-3.5', 'covers'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_CoveredBy(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'coveredby'
+	AS '$libdir/postgis-3.5', 'coveredby'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Overlaps(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','overlaps'
+	AS '$libdir/postgis-3.5','overlaps'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_DFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_dfullywithin'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dfullywithin'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_3DDWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_dwithin3d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dwithin3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,float8)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_dfullywithin3d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_dfullywithin3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'ST_3DIntersects'
+	AS '$libdir/postgis-3.5', 'ST_3DIntersects'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_OrderingEquals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_same'
+	AS '$libdir/postgis-3.5', 'LWGEOM_same'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','ST_Equals'
+	AS '$libdir/postgis-3.5','ST_Equals'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
-
+	COST 5000;
 
 -----------------------------------------------------------------------------
 
@@ -4443,63 +4733,63 @@ CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
 -- TODO: change null returns to true
 CREATE OR REPLACE FUNCTION ST_IsValid(geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'isvalid'
+	AS '$libdir/postgis-3.5', 'isvalid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_MinimumClearance(geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'ST_MinimumClearance'
+	AS '$libdir/postgis-3.5', 'ST_MinimumClearance'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_MinimumClearanceLine(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_MinimumClearanceLine'
+	AS '$libdir/postgis-3.5', 'ST_MinimumClearanceLine'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- PostGIS equivalent function: Centroid(geometry)
 CREATE OR REPLACE FUNCTION ST_Centroid(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'centroid'
+	AS '$libdir/postgis-3.5', 'centroid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION ST_GeometricMedian(g geometry, tolerance float8 DEFAULT NULL, max_iter int DEFAULT 10000, fail_if_not_converged boolean DEFAULT false)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_GeometricMedian'
+	AS '$libdir/postgis-3.5', 'ST_GeometricMedian'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- PostGIS equivalent function: IsRing(geometry)
 CREATE OR REPLACE FUNCTION ST_IsRing(geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'isring'
+	AS '$libdir/postgis-3.5', 'isring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- PostGIS equivalent function: PointOnSurface(geometry)
 CREATE OR REPLACE FUNCTION ST_PointOnSurface(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'pointonsurface'
+	AS '$libdir/postgis-3.5', 'pointonsurface'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- PostGIS equivalent function: IsSimple(geometry)
 CREATE OR REPLACE FUNCTION ST_IsSimple(geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'issimple'
+	AS '$libdir/postgis-3.5', 'issimple'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_IsCollection(geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'ST_IsCollection'
+	AS '$libdir/postgis-3.5', 'ST_IsCollection'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -4507,53 +4797,81 @@ CREATE OR REPLACE FUNCTION ST_IsCollection(geometry)
 -- TODO: drop in 2.0.0 !
 CREATE OR REPLACE FUNCTION Equals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','ST_Equals'
+	AS '$libdir/postgis-3.5','ST_Equals'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -----------------------------------------------------------------------
 -- GML & KML INPUT
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _ST_GeomFromGML(text, int4)
+CREATE OR REPLACE FUNCTION _ST_GeomFromGML(text, integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','geom_from_gml'
+	AS '$libdir/postgis-3.5','geom_from_gml'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_GeomFromGML(text, int4)
+CREATE OR REPLACE FUNCTION ST_GeomFromGML(text, integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','geom_from_gml'
+	AS '$libdir/postgis-3.5','geom_from_gml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeomFromGML(text)
 	RETURNS geometry
 	AS 'SELECT _ST_GeomFromGML($1, 0)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GMLToSQL(text)
 	RETURNS geometry
 	AS 'SELECT _ST_GeomFromGML($1, 0)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_GMLToSQL(text, int4)
+CREATE OR REPLACE FUNCTION ST_GMLToSQL(text, integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','geom_from_gml'
+	AS '$libdir/postgis-3.5','geom_from_gml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','geom_from_kml'
+	AS '$libdir/postgis-3.5','geom_from_kml'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+
+
+-----------------------------------------------------------------------
+-- MARC21/XML INPUT
+-----------------------------------------------------------------------
+
+-- Availability: 3.2.3
+
+CREATE OR REPLACE FUNCTION ST_GeomFromMARC21(marc21xml text)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5','ST_GeomFromMARC21'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 500;
+
+-----------------------------------------------------------------------
+-- MARC21 OUTPUT
+-----------------------------------------------------------------------
+
+-- Availability: 3.2.3
+
+CREATE OR REPLACE FUNCTION ST_AsMARC21(geom geometry, format text DEFAULT 'hdddmmss')
+	RETURNS TEXT
+	AS '$libdir/postgis-3.5','ST_AsMARC21'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+
 
 -----------------------------------------------------------------------
 -- GEOJSON INPUT
@@ -4561,40 +4879,40 @@ CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','geom_from_geojson'
+	AS '$libdir/postgis-3.5','geom_from_geojson'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(json)
 	RETURNS geometry
 	AS 'SELECT ST_GeomFromGeoJson($1::text)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(jsonb)
 	RETURNS geometry
 	AS 'SELECT ST_GeomFromGeoJson($1::text)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION postgis_libjson_version()
 	RETURNS text
-	AS '$libdir/postgis-3.2','postgis_libjson_version'
+	AS '$libdir/postgis-3.5','postgis_libjson_version'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 ----------------------------------------------------------------------
 -- ENCODED POLYLINE INPUT
 -----------------------------------------------------------------------
 -- Availability: 2.2.0
--- ST_LineFromEncodedPolyline(polyline text, precision int4)
-CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(txtin text, nprecision int4 DEFAULT 5)
+-- ST_LineFromEncodedPolyline(polyline text, precision integer)
+CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(txtin text, nprecision integer DEFAULT 5)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','line_from_encoded_polyline'
+	AS '$libdir/postgis-3.5','line_from_encoded_polyline'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 ------------------------------------------------------------------------
 
@@ -4602,12 +4920,12 @@ CREATE OR REPLACE FUNCTION ST_LineFromEncodedPolyline(txtin text, nprecision int
 -- ENCODED POLYLINE OUTPUT
 -----------------------------------------------------------------------
 -- Availability: 2.2.0
--- ST_AsEncodedPolyline(geom geometry, precision int4)
-CREATE OR REPLACE FUNCTION ST_AsEncodedPolyline(geom geometry, nprecision int4 DEFAULT 5)
+-- ST_AsEncodedPolyline(geom geometry, precision integer)
+CREATE OR REPLACE FUNCTION ST_AsEncodedPolyline(geom geometry, nprecision integer DEFAULT 5)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asEncodedPolyline'
+	AS '$libdir/postgis-3.5','LWGEOM_asEncodedPolyline'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 ------------------------------------------------------------------------
 
@@ -4616,21 +4934,21 @@ CREATE OR REPLACE FUNCTION ST_AsEncodedPolyline(geom geometry, nprecision int4 D
 -----------------------------------------------------------------------
 -- Availability: 1.2.2
 -- Changed: 2.0.0 changed to use default args and allow calling by named args
-CREATE OR REPLACE FUNCTION ST_AsSVG(geom geometry, rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15)
+CREATE OR REPLACE FUNCTION ST_AsSVG(geom geometry, rel integer DEFAULT 0, maxdecimaldigits integer DEFAULT 15)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asSVG'
+	AS '$libdir/postgis-3.5','LWGEOM_asSVG'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -----------------------------------------------------------------------
 -- GML OUTPUT
 -----------------------------------------------------------------------
 -- _ST_AsGML(version, geom, precision, option, prefix, id)
-CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text, text)
+CREATE OR REPLACE FUNCTION _ST_AsGML(integer, geometry, integer, integer, text, text)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asGML'
+	AS '$libdir/postgis-3.5','LWGEOM_asGML'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- ST_AsGML(version, geom) / precision=15
 -- Availability: 1.3.2
@@ -4640,11 +4958,11 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text, text)
 -- ST_AsGML (geom, precision, option) / version=2
 -- Availability: 1.4.0
 -- Changed: 2.0.0 to have default args
-CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asGML'
+	AS '$libdir/postgis-3.5','LWGEOM_asGML'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- ST_AsGML(version, geom, precision, option)
 -- Availability: 1.4.0
@@ -4653,11 +4971,11 @@ CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT
 -- Changed: 2.0.0 to use default and named args
 -- ST_AsGML(version, geom, precision, option, prefix, id)
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT null, id text DEFAULT null)
+CREATE OR REPLACE FUNCTION ST_AsGML(version integer, geom geometry, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0, nprefix text DEFAULT null, id text DEFAULT null)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asGML'
+	AS '$libdir/postgis-3.5','LWGEOM_asGML'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -----------------------------------------------------------------------
 -- KML OUTPUT
@@ -4665,12 +4983,12 @@ CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigit
 
 -- Availability: 1.2.2
 -- Changed: 2.0.0 to use default args and allow named args
--- Replaces ST_AsKML(geometry, int4) deprecated in 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix TEXT default '')
+-- Replaces ST_AsKML(geometry, integer) deprecated in 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits integer DEFAULT 15, nprefix TEXT default '')
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asKML'
+	AS '$libdir/postgis-3.5','LWGEOM_asKML'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -----------------------------------------------------------------------
 -- GEOJSON OUTPUT
@@ -4680,37 +4998,39 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT
 -- ST_AsGeoJson(geom, precision, options) / version=1
 -- Changed: 2.0.0 to use default args and named args
 -- Changed: 3.0.0 change default args mode
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEFAULT 9, options int4 DEFAULT 8)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits integer DEFAULT 9, options integer DEFAULT 8)
 	RETURNS text
-	AS '$libdir/postgis-3.2','LWGEOM_asGeoJson'
+	AS '$libdir/postgis-3.5','LWGEOM_asGeoJson'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits int4 DEFAULT 9, pretty_bool bool DEFAULT false)
+-- Changed: 3.5.0 add id_column='' parameter
+-- Replaces ST_AsGeoJson(record, text, integer, bool) deprecated in 3.5.0
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(r record, geom_column text DEFAULT '', maxdecimaldigits integer DEFAULT 9, pretty_bool boolean DEFAULT false, id_column text DEFAULT '')
 	RETURNS text
-	AS '$libdir/postgis-3.2','ST_AsGeoJsonRow'
+	AS '$libdir/postgis-3.5','ST_AsGeoJsonRow'
 	LANGUAGE 'c' STABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION json(geometry)
+CREATE OR REPLACE FUNCTION "json"(geometry)
 	RETURNS json
-	AS '$libdir/postgis-3.2','geometry_to_json'
+	AS '$libdir/postgis-3.5','geometry_to_json'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION jsonb(geometry)
+CREATE OR REPLACE FUNCTION "jsonb"(geometry)
 	RETURNS jsonb
-	AS '$libdir/postgis-3.2','geometry_to_jsonb'
+	AS '$libdir/postgis-3.5','geometry_to_jsonb'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.0.0
-CREATE CAST (geometry AS json) WITH FUNCTION json(geometry);
+CREATE CAST (geometry AS json) WITH FUNCTION "json"(geometry);
 -- Availability: 3.0.0
-CREATE CAST (geometry AS jsonb) WITH FUNCTION jsonb(geometry);
+CREATE CAST (geometry AS jsonb) WITH FUNCTION "jsonb"(geometry);
 
 -----------------------------------------------------------------------
 -- Mapbox Vector Tile OUTPUT
@@ -4720,65 +5040,65 @@ CREATE CAST (geometry AS jsonb) WITH FUNCTION jsonb(geometry);
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4)
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, integer)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, text)
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, integer, text)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, int4, text, text)
+CREATE OR REPLACE FUNCTION pgis_asmvt_transfn(internal, anyelement, text, integer, text, text)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_finalfn(internal)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_finalfn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_finalfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_combinefn(internal, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_combinefn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_combinefn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_serialfn(internal)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_serialfn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_serialfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION pgis_asmvt_deserialfn(bytea, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asmvt_deserialfn'
+	AS '$libdir/postgis-3.5', 'pgis_asmvt_deserialfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.4.0
 -- Changed: 3.2.0
@@ -4790,10 +5110,8 @@ CREATE AGGREGATE ST_AsMVT(anyelement)
 	serialfunc = pgis_asmvt_serialfn,
 	deserialfunc = pgis_asmvt_deserialfn,
 	combinefunc = pgis_asmvt_combinefn,
-	finalfunc = pgis_asmvt_finalfn
-
-	,finalfunc_modify = read_write
-
+	finalfunc = pgis_asmvt_finalfn,
+	finalfunc_modify = read_write
 );
 
 -- Availability: 2.4.0
@@ -4807,14 +5125,13 @@ CREATE AGGREGATE ST_AsMVT(anyelement, text)
 	deserialfunc = pgis_asmvt_deserialfn,
 	combinefunc = pgis_asmvt_combinefn,
 	finalfunc = pgis_asmvt_finalfn
-
 	,finalfunc_modify = read_write
-
 );
 
 -- Availability: 2.4.0
+-- Changed: 3.3.0
 -- Changed: 3.2.0
-CREATE AGGREGATE ST_AsMVT(anyelement, text, int4)
+CREATE AGGREGATE ST_AsMVT(anyelement, text, integer)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
@@ -4822,15 +5139,14 @@ CREATE AGGREGATE ST_AsMVT(anyelement, text, int4)
 	serialfunc = pgis_asmvt_serialfn,
 	deserialfunc = pgis_asmvt_deserialfn,
 	combinefunc = pgis_asmvt_combinefn,
-	finalfunc = pgis_asmvt_finalfn
-
-	,finalfunc_modify = read_write
-
+	finalfunc = pgis_asmvt_finalfn,
+	finalfunc_modify = read_write
 );
 
 -- Availability: 2.4.0
+-- Changed: 3.3.0
 -- Changed: 3.2.0
-CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
+CREATE AGGREGATE ST_AsMVT(anyelement, text, integer, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
@@ -4838,15 +5154,14 @@ CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text)
 	serialfunc = pgis_asmvt_serialfn,
 	deserialfunc = pgis_asmvt_deserialfn,
 	combinefunc = pgis_asmvt_combinefn,
-	finalfunc = pgis_asmvt_finalfn
-
-	,finalfunc_modify = read_write
-
+	finalfunc = pgis_asmvt_finalfn,
+	finalfunc_modify = read_write
 );
 
 -- Availability: 3.0.0
+-- Changed: 3.3.0
 -- Changed: 3.2.0
-CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text, text)
+CREATE AGGREGATE ST_AsMVT(anyelement, text, integer, text, text)
 (
 	sfunc = pgis_asmvt_transfn,
 	stype = internal,
@@ -4854,23 +5169,21 @@ CREATE AGGREGATE ST_AsMVT(anyelement, text, int4, text, text)
 	serialfunc = pgis_asmvt_serialfn,
 	deserialfunc = pgis_asmvt_deserialfn,
 	combinefunc = pgis_asmvt_combinefn,
-	finalfunc = pgis_asmvt_finalfn
-
-	,finalfunc_modify = read_write
-
+	finalfunc = pgis_asmvt_finalfn,
+	finalfunc_modify = read_write
 );
 
 -- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION ST_AsMVTGeom(geom geometry, bounds box2d, extent int4 default 4096, buffer int4 default 256, clip_geom bool default true)
+CREATE OR REPLACE FUNCTION ST_AsMVTGeom(geom geometry, bounds box2d, extent integer default 4096, buffer integer default 256, clip_geom bool default true)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','ST_AsMVTGeom'
+	AS '$libdir/postgis-3.5','ST_AsMVTGeom'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 	RETURNS text
-	AS '$libdir/postgis-3.2','postgis_libprotobuf_version'
+	AS '$libdir/postgis-3.5','postgis_libprotobuf_version'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
@@ -4881,23 +5194,23 @@ CREATE OR REPLACE FUNCTION postgis_libprotobuf_version()
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, anyelement)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asgeobuf_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asgeobuf_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_transfn(internal, anyelement, text)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asgeobuf_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asgeobuf_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.4.0
 CREATE OR REPLACE FUNCTION pgis_asgeobuf_finalfn(internal)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2', 'pgis_asgeobuf_finalfn'
+	AS '$libdir/postgis-3.5', 'pgis_asgeobuf_finalfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.4.0
 CREATE AGGREGATE ST_AsGeobuf(anyelement)
@@ -4925,53 +5238,51 @@ CREATE AGGREGATE ST_AsGeobuf(anyelement, text)
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION pgis_asflatgeobuf_transfn(internal, anyelement)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asflatgeobuf_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asflatgeobuf_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION pgis_asflatgeobuf_transfn(internal, anyelement, bool)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asflatgeobuf_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asflatgeobuf_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION pgis_asflatgeobuf_transfn(internal, anyelement, bool, text)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'pgis_asflatgeobuf_transfn'
+	AS '$libdir/postgis-3.5', 'pgis_asflatgeobuf_transfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION pgis_asflatgeobuf_finalfn(internal)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2', 'pgis_asflatgeobuf_finalfn'
+	AS '$libdir/postgis-3.5', 'pgis_asflatgeobuf_finalfn'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.2.0
+-- Changed: 3.3.0
 CREATE AGGREGATE ST_AsFlatGeobuf(anyelement)
 (
 	sfunc = pgis_asflatgeobuf_transfn,
 	stype = internal,
 	parallel = safe,
-	finalfunc = pgis_asflatgeobuf_finalfn
-
-	,finalfunc_modify = read_write
-
+	finalfunc = pgis_asflatgeobuf_finalfn,
+	finalfunc_modify = read_write
 );
 
 -- Availability: 3.2.0
+-- Changed: 3.3.0
 CREATE AGGREGATE ST_AsFlatGeobuf(anyelement, bool)
 (
 	sfunc = pgis_asflatgeobuf_transfn,
 	stype = internal,
 	parallel = safe,
-	finalfunc = pgis_asflatgeobuf_finalfn
-
-	,finalfunc_modify = read_write
-
+	finalfunc = pgis_asflatgeobuf_finalfn,
+	finalfunc_modify = read_write
 );
 
 -- Availability: 3.2.0
@@ -4991,16 +5302,16 @@ CREATE AGGREGATE ST_AsFlatGeobuf(anyelement, bool, text)
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_FromFlatGeobufToTable(text, text, bytea)
 	RETURNS void
-	AS '$libdir/postgis-3.2','pgis_tablefromflatgeobuf'
+	AS '$libdir/postgis-3.5','pgis_tablefromflatgeobuf'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_FromFlatGeobuf(anyelement, bytea)
 	RETURNS setof anyelement
-	AS '$libdir/postgis-3.2','pgis_fromflatgeobuf'
+	AS '$libdir/postgis-3.5','pgis_fromflatgeobuf'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 ------------------------------------------------------------------------
 -- GeoHash (geohash.org)
@@ -5008,9 +5319,9 @@ CREATE OR REPLACE FUNCTION ST_FromFlatGeobuf(anyelement, bytea)
 
 -- Availability 1.4.0
 -- Changed 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars integer DEFAULT 0)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2', 'ST_GeoHash'
+	AS '$libdir/postgis-3.5', 'ST_GeoHash'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -5018,7 +5329,7 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars int4 DEFAULT 0)
 -- Availability 3.1.0
 CREATE OR REPLACE FUNCTION _ST_SortableHash(geom geometry)
 	RETURNS bigint
-	AS '$libdir/postgis-3.2', '_ST_SortableHash'
+	AS '$libdir/postgis-3.5', '_ST_SortableHash'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -5026,22 +5337,22 @@ CREATE OR REPLACE FUNCTION _ST_SortableHash(geom geometry)
 -- GeoHash input
 -- Availability: 2.0.?
 -----------------------------------------------------------------------
--- ST_Box2dFromGeoHash(geohash text, precision int4)
-CREATE OR REPLACE FUNCTION ST_Box2dFromGeoHash(text, int4 DEFAULT NULL)
+-- ST_Box2dFromGeoHash(geohash text, precision integer)
+CREATE OR REPLACE FUNCTION ST_Box2dFromGeoHash(text, integer DEFAULT NULL)
 	RETURNS box2d
-	AS '$libdir/postgis-3.2','box2d_from_geohash'
+	AS '$libdir/postgis-3.5','box2d_from_geohash'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
--- ST_PointFromGeoHash(geohash text, precision int4)
-CREATE OR REPLACE FUNCTION ST_PointFromGeoHash(text, int4 DEFAULT NULL)
+-- ST_PointFromGeoHash(geohash text, precision integer)
+CREATE OR REPLACE FUNCTION ST_PointFromGeoHash(text, integer DEFAULT NULL)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','point_from_geohash'
+	AS '$libdir/postgis-3.5','point_from_geohash'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
 	COST 50;
 
--- ST_GeomFromGeoHash(geohash text, precision int4)
-CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, int4 DEFAULT NULL)
+-- ST_GeomFromGeoHash(geohash text, precision integer)
+CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, integer DEFAULT NULL)
 	RETURNS geometry
 	AS $$ SELECT CAST(ST_Box2dFromGeoHash($1, $2) AS geometry); $$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE
@@ -5052,84 +5363,84 @@ CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, int4 DEFAULT NULL)
 ------------------------------------------------------------------------
 -- PostGIS equivalent function: NumPoints(geometry)
 CREATE OR REPLACE FUNCTION ST_NumPoints(geometry)
-	RETURNS int4
-	AS '$libdir/postgis-3.2', 'LWGEOM_numpoints_linestring'
+	RETURNS integer
+	AS '$libdir/postgis-3.5', 'LWGEOM_numpoints_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: NumGeometries(geometry)
 CREATE OR REPLACE FUNCTION ST_NumGeometries(geometry)
-	RETURNS int4
-	AS '$libdir/postgis-3.2', 'LWGEOM_numgeometries_collection'
+	RETURNS integer
+	AS '$libdir/postgis-3.5', 'LWGEOM_numgeometries_collection'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: GeometryN(geometry)
 CREATE OR REPLACE FUNCTION ST_GeometryN(geometry,integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_geometryn_collection'
+	AS '$libdir/postgis-3.5', 'LWGEOM_geometryn_collection'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: Dimension(geometry)
 CREATE OR REPLACE FUNCTION ST_Dimension(geometry)
-	RETURNS int4
-	AS '$libdir/postgis-3.2', 'LWGEOM_dimension'
+	RETURNS integer
+	AS '$libdir/postgis-3.5', 'LWGEOM_dimension'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: ExteriorRing(geometry)
 CREATE OR REPLACE FUNCTION ST_ExteriorRing(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_exteriorring_polygon'
+	AS '$libdir/postgis-3.5','LWGEOM_exteriorring_polygon'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: NumInteriorRings(geometry)
 CREATE OR REPLACE FUNCTION ST_NumInteriorRings(geometry)
 	RETURNS integer
-	AS '$libdir/postgis-3.2','LWGEOM_numinteriorrings_polygon'
+	AS '$libdir/postgis-3.5','LWGEOM_numinteriorrings_polygon'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_NumInteriorRing(geometry)
 	RETURNS integer
-	AS '$libdir/postgis-3.2','LWGEOM_numinteriorrings_polygon'
+	AS '$libdir/postgis-3.5','LWGEOM_numinteriorrings_polygon'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: InteriorRingN(geometry)
 CREATE OR REPLACE FUNCTION ST_InteriorRingN(geometry,integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_interiorringn_polygon'
+	AS '$libdir/postgis-3.5','LWGEOM_interiorringn_polygon'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Deprecation in 1.2.3 -- this should not be deprecated (2011-01-04 robe)
 CREATE OR REPLACE FUNCTION GeometryType(geometry)
 	RETURNS text
-	AS '$libdir/postgis-3.2', 'LWGEOM_getTYPE'
+	AS '$libdir/postgis-3.5', 'LWGEOM_getTYPE'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- Not quite equivalent to GeometryType
 CREATE OR REPLACE FUNCTION ST_GeometryType(geometry)
 	RETURNS text
-	AS '$libdir/postgis-3.2', 'geometry_geometrytype'
+	AS '$libdir/postgis-3.5', 'geometry_geometrytype'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
 -- PostGIS equivalent function: PointN(geometry,integer)
 CREATE OR REPLACE FUNCTION ST_PointN(geometry,integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_pointn_linestring'
+	AS '$libdir/postgis-3.5','LWGEOM_pointn_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_NumPatches(geometry)
-	RETURNS int4
+	RETURNS integer
 	AS '
 	SELECT CASE WHEN ST_GeometryType($1) = ''ST_PolyhedralSurface''
 	THEN ST_NumGeometries($1)
@@ -5152,95 +5463,95 @@ CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
 -- PostGIS equivalent function of old StartPoint(geometry))
 CREATE OR REPLACE FUNCTION ST_StartPoint(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_startpoint_linestring'
+	AS '$libdir/postgis-3.5', 'LWGEOM_startpoint_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function of old EndPoint(geometry)
 CREATE OR REPLACE FUNCTION ST_EndPoint(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_endpoint_linestring'
+	AS '$libdir/postgis-3.5', 'LWGEOM_endpoint_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: IsClosed(geometry)
 CREATE OR REPLACE FUNCTION ST_IsClosed(geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_isclosed'
+	AS '$libdir/postgis-3.5', 'LWGEOM_isclosed'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: IsEmpty(geometry)
 CREATE OR REPLACE FUNCTION ST_IsEmpty(geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_isempty'
+	AS '$libdir/postgis-3.5', 'LWGEOM_isempty'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry,text)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','LWGEOM_asBinary'
+	AS '$libdir/postgis-3.5','LWGEOM_asBinary'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent of old function: AsBinary(geometry)
 CREATE OR REPLACE FUNCTION ST_AsBinary(geometry)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','LWGEOM_asBinary'
+	AS '$libdir/postgis-3.5','LWGEOM_asBinary'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- PostGIS equivalent function: AsText(geometry)
 CREATE OR REPLACE FUNCTION ST_AsText(geometry)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asText'
+	AS '$libdir/postgis-3.5','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.5.0
--- PostGIS equivalent function: AsText(geometry, int4)
-CREATE OR REPLACE FUNCTION ST_AsText(geometry, int4)
+-- PostGIS equivalent function: AsText(geometry, integer)
+CREATE OR REPLACE FUNCTION ST_AsText(geometry, integer)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asText'
+	AS '$libdir/postgis-3.5','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeometryFromText(text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_from_text'
+	AS '$libdir/postgis-3.5','LWGEOM_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_GeometryFromText(text, int4)
+CREATE OR REPLACE FUNCTION ST_GeometryFromText(text, integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_from_text'
+	AS '$libdir/postgis-3.5','LWGEOM_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomFromText(text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_from_text'
+	AS '$libdir/postgis-3.5','LWGEOM_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
--- PostGIS equivalent function: ST_GeometryFromText(text, int4)
-CREATE OR REPLACE FUNCTION ST_GeomFromText(text, int4)
+-- PostGIS equivalent function: ST_GeometryFromText(text, integer)
+CREATE OR REPLACE FUNCTION ST_GeomFromText(text, integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_from_text'
+	AS '$libdir/postgis-3.5','LWGEOM_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- PostGIS equivalent function: ST_GeometryFromText(text)
 -- SQL/MM alias for ST_GeomFromText
 CREATE OR REPLACE FUNCTION ST_WKTToSQL(text)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_from_text'
+	AS '$libdir/postgis-3.5','LWGEOM_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PointFromText(text)
@@ -5251,11 +5562,11 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
--- PostGIS equivalent function: PointFromText(text, int4)
+-- PostGIS equivalent function: PointFromText(text, integer)
 -- TODO: improve this ... by not duplicating constructor time.
-CREATE OR REPLACE FUNCTION ST_PointFromText(text, int4)
+CREATE OR REPLACE FUNCTION ST_PointFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''POINT''
@@ -5263,7 +5574,7 @@ CREATE OR REPLACE FUNCTION ST_PointFromText(text, int4)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_LineFromText(text)
@@ -5274,10 +5585,10 @@ CREATE OR REPLACE FUNCTION ST_LineFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
--- PostGIS equivalent function: LineFromText(text, int4)
-CREATE OR REPLACE FUNCTION ST_LineFromText(text, int4)
+-- PostGIS equivalent function: LineFromText(text, integer)
+CREATE OR REPLACE FUNCTION ST_LineFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''LINESTRING''
@@ -5285,7 +5596,7 @@ CREATE OR REPLACE FUNCTION ST_LineFromText(text, int4)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolyFromText(text)
@@ -5296,10 +5607,10 @@ CREATE OR REPLACE FUNCTION ST_PolyFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
--- PostGIS equivalent function: ST_PolygonFromText(text, int4)
-CREATE OR REPLACE FUNCTION ST_PolyFromText(text, int4)
+-- PostGIS equivalent function: ST_PolygonFromText(text, integer)
+CREATE OR REPLACE FUNCTION ST_PolyFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''POLYGON''
@@ -5307,24 +5618,24 @@ CREATE OR REPLACE FUNCTION ST_PolyFromText(text, int4)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_PolygonFromText(text, int4)
+CREATE OR REPLACE FUNCTION ST_PolygonFromText(text, integer)
 	RETURNS geometry
 	AS 'SELECT ST_PolyFromText($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PolygonFromText(text)
 	RETURNS geometry
 	AS 'SELECT ST_PolyFromText($1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
--- PostGIS equivalent function: MLineFromText(text, int4)
-CREATE OR REPLACE FUNCTION ST_MLineFromText(text, int4)
+-- PostGIS equivalent function: MLineFromText(text, integer)
+CREATE OR REPLACE FUNCTION ST_MLineFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE
@@ -5333,7 +5644,7 @@ CREATE OR REPLACE FUNCTION ST_MLineFromText(text, int4)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MLineFromText(text)
@@ -5344,24 +5655,24 @@ CREATE OR REPLACE FUNCTION ST_MLineFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text)
 	RETURNS geometry
 	AS 'SELECT ST_MLineFromText($1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text, int4)
+CREATE OR REPLACE FUNCTION ST_MultiLineStringFromText(text, integer)
 	RETURNS geometry
 	AS 'SELECT ST_MLineFromText($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
--- PostGIS equivalent function: MPointFromText(text, int4)
-CREATE OR REPLACE FUNCTION ST_MPointFromText(text, int4)
+-- PostGIS equivalent function: MPointFromText(text, integer)
+CREATE OR REPLACE FUNCTION ST_MPointFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''MULTIPOINT''
@@ -5369,7 +5680,7 @@ CREATE OR REPLACE FUNCTION ST_MPointFromText(text, int4)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MPointFromText(text)
@@ -5380,17 +5691,17 @@ CREATE OR REPLACE FUNCTION ST_MPointFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPointFromText(text)
 	RETURNS geometry
 	AS 'SELECT ST_MPointFromText($1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
--- PostGIS equivalent function: MPolyFromText(text, int4)
-CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
+-- PostGIS equivalent function: MPolyFromText(text, integer)
+CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE WHEN geometrytype(ST_GeomFromText($1, $2)) = ''MULTIPOLYGON''
@@ -5398,7 +5709,7 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromText(text, int4)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 --Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MPolyFromText(text)
@@ -5409,24 +5720,24 @@ CREATE OR REPLACE FUNCTION ST_MPolyFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MultiPolygonFromText(text, int4)
+CREATE OR REPLACE FUNCTION ST_MultiPolygonFromText(text, integer)
 	RETURNS geometry
 	AS 'SELECT ST_MPolyFromText($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MultiPolygonFromText(text)
 	RETURNS geometry
 	AS 'SELECT ST_MPolyFromText($1)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, int4)
+CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, integer)
 	RETURNS geometry
 	AS '
 	SELECT CASE
@@ -5435,7 +5746,7 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text, int4)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text)
@@ -5447,12 +5758,12 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromText(text)
 	ELSE NULL END
 	'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_GeomFromWKB(bytea)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_from_WKB'
+	AS '$libdir/postgis-3.5','LWGEOM_from_WKB'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -5723,45 +6034,45 @@ CREATE OR REPLACE FUNCTION ST_GeomCollFromWKB(bytea)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_MaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'LWGEOM_maxdistance2d_linestring'
+	AS '$libdir/postgis-3.5', 'LWGEOM_maxdistance2d_linestring'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_MaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'SELECT _ST_MaxDistance(ST_ConvexHull($1), ST_ConvexHull($2))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_ClosestPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_closestpoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_closestpoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 CREATE OR REPLACE FUNCTION ST_ShortestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_shortestline2d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_shortestline2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 CREATE OR REPLACE FUNCTION _ST_LongestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_longestline2d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_longestline2d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 CREATE OR REPLACE FUNCTION ST_LongestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
 	AS 'SELECT _ST_LongestLine(ST_ConvexHull($1), ST_ConvexHull($2))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION ST_SwapOrdinates(geom geometry, ords cstring)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_SwapOrdinates'
+	AS '$libdir/postgis-3.5', 'ST_SwapOrdinates'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -5770,7 +6081,7 @@ CREATE OR REPLACE FUNCTION ST_SwapOrdinates(geom geometry, ords cstring)
 --	   spec strings
 CREATE OR REPLACE FUNCTION ST_FlipCoordinates(geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_FlipCoordinates'
+	AS '$libdir/postgis-3.5', 'ST_FlipCoordinates'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -5857,328 +6168,6 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
 
 
 
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
---
---
--- PostGIS - Spatial Types for PostgreSQL
--- http://postgis.net
--- Copyright 2001-2003 Refractions Research Inc.
---
--- This is free software; you can redistribute and/or modify it under
--- the terms of the GNU General Public Licence. See the COPYING file.
---
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-
------------------------------------------------------------------------
--- LONG TERM LOCKING
------------------------------------------------------------------------
-
--- UnlockRows(authid)
--- removes all locks held by the given auth
--- returns the number of locks released
-CREATE OR REPLACE FUNCTION UnlockRows(text)
-	RETURNS int
-	AS $$
-DECLARE
-	ret int;
-BEGIN
-
-	IF NOT LongTransactionsEnabled() THEN
-		RAISE EXCEPTION 'Long transaction support disabled, use EnableLongTransaction() to enable.';
-	END IF;
-
-	EXECUTE 'DELETE FROM authorization_table where authid = ' ||
-		quote_literal($1);
-
-	GET DIAGNOSTICS ret = ROW_COUNT;
-
-	RETURN ret;
-END;
-$$
-LANGUAGE 'plpgsql'  VOLATILE STRICT;
-
--- LockRow([schema], table, rowid, auth, [expires])
--- Returns 1 if successfully obtained the lock, 0 otherwise
-CREATE OR REPLACE FUNCTION LockRow(text, text, text, text, timestamp)
-	RETURNS int
-	AS $$
-DECLARE
-	myschema alias for $1;
-	mytable alias for $2;
-	myrid   alias for $3;
-	authid alias for $4;
-	expires alias for $5;
-	ret int;
-	mytoid oid;
-	myrec RECORD;
-
-BEGIN
-
-	IF NOT LongTransactionsEnabled() THEN
-		RAISE EXCEPTION 'Long transaction support disabled, use EnableLongTransaction() to enable.';
-	END IF;
-
-	EXECUTE 'DELETE FROM authorization_table WHERE expires < now()';
-
-	SELECT c.oid INTO mytoid FROM pg_class c, pg_namespace n
-		WHERE c.relname = mytable
-		AND c.relnamespace = n.oid
-		AND n.nspname = myschema;
-
-	-- RAISE NOTICE 'toid: %', mytoid;
-
-	FOR myrec IN SELECT * FROM authorization_table WHERE
-		toid = mytoid AND rid = myrid
-	LOOP
-		IF myrec.authid != authid THEN
-			RETURN 0;
-		ELSE
-			RETURN 1;
-		END IF;
-	END LOOP;
-
-	EXECUTE 'INSERT INTO authorization_table VALUES ('||
-		quote_literal(mytoid::text)||','||quote_literal(myrid)||
-		','||quote_literal(expires::text)||
-		','||quote_literal(authid) ||')';
-
-	GET DIAGNOSTICS ret = ROW_COUNT;
-
-	RETURN ret;
-END;
-$$
-LANGUAGE 'plpgsql'  VOLATILE STRICT;
-
--- LockRow(schema, table, rid, authid);
-CREATE OR REPLACE FUNCTION LockRow(text, text, text, text)
-	RETURNS int
-	AS
-$$ SELECT LockRow($1, $2, $3, $4, now()::timestamp+'1:00'); $$
-	LANGUAGE 'sql'  VOLATILE STRICT;
-
--- LockRow(table, rid, authid);
-CREATE OR REPLACE FUNCTION LockRow(text, text, text)
-	RETURNS int
-	AS
-$$ SELECT LockRow(current_schema(), $1, $2, $3, now()::timestamp+'1:00'); $$
-	LANGUAGE 'sql'  VOLATILE STRICT;
-
--- LockRow(schema, table, rid, expires);
-CREATE OR REPLACE FUNCTION LockRow(text, text, text, timestamp)
-	RETURNS int
-	AS
-$$ SELECT LockRow(current_schema(), $1, $2, $3, $4); $$
-	LANGUAGE 'sql'  VOLATILE STRICT;
-
-CREATE OR REPLACE FUNCTION AddAuth(text)
-	RETURNS BOOLEAN
-	AS $$
-DECLARE
-	lockid alias for $1;
-	okay boolean;
-	myrec record;
-BEGIN
-	-- check to see if table exists
-	--  if not, CREATE TEMP TABLE mylock (transid xid, lockcode text)
-	okay := 'f';
-	FOR myrec IN SELECT * FROM pg_class WHERE relname = 'temp_lock_have_table' LOOP
-		okay := 't';
-	END LOOP;
-	IF (okay <> 't') THEN
-		CREATE TEMP TABLE temp_lock_have_table (transid xid, lockcode text);
-			-- this will only work from pgsql7.4 up
-			-- ON COMMIT DELETE ROWS;
-	END IF;
-
-	--  INSERT INTO mylock VALUES ( $1)
---	EXECUTE 'INSERT INTO temp_lock_have_table VALUES ( '||
---		quote_literal(getTransactionID()) || ',' ||
---		quote_literal(lockid) ||')';
-
-	INSERT INTO temp_lock_have_table VALUES (getTransactionID(), lockid);
-
-	RETURN true::boolean;
-END;
-$$
-LANGUAGE PLPGSQL;
-
--- CheckAuth( <schema>, <table>, <ridcolumn> )
---
--- Returns 0
---
-CREATE OR REPLACE FUNCTION CheckAuth(text, text, text)
-	RETURNS INT
-	AS $$
-DECLARE
-	schema text;
-BEGIN
-	IF NOT LongTransactionsEnabled() THEN
-		RAISE EXCEPTION 'Long transaction support disabled, use EnableLongTransaction() to enable.';
-	END IF;
-
-	if ( $1 != '' ) THEN
-		schema = $1;
-	ELSE
-		SELECT current_schema() into schema;
-	END IF;
-
-	-- TODO: check for an already existing trigger ?
-
-	EXECUTE 'CREATE TRIGGER check_auth BEFORE UPDATE OR DELETE ON '
-		|| quote_ident(schema) || '.' || quote_ident($2)
-		||' FOR EACH ROW EXECUTE PROCEDURE CheckAuthTrigger('
-		|| quote_literal($3) || ')';
-
-	RETURN 0;
-END;
-$$
-LANGUAGE 'plpgsql';
-
--- CheckAuth(<table>, <ridcolumn>)
-CREATE OR REPLACE FUNCTION CheckAuth(text, text)
-	RETURNS INT
-	AS
-	$$ SELECT CheckAuth('', $1, $2) $$
-	LANGUAGE 'sql';
-
-CREATE OR REPLACE FUNCTION CheckAuthTrigger()
-	RETURNS trigger AS
-	'$libdir/postgis-3.2', 'check_authorization'
-	LANGUAGE C;
-
-CREATE OR REPLACE FUNCTION GetTransactionID()
-	RETURNS xid AS
-	'$libdir/postgis-3.2', 'getTransactionID'
-	LANGUAGE C;
-
---
--- Enable Long transactions support
---
---  Creates the authorization_table if not already existing
---
-CREATE OR REPLACE FUNCTION EnableLongTransactions()
-	RETURNS TEXT
-	AS $$
-DECLARE
-	"query" text;
-	exists bool;
-	rec RECORD;
-
-BEGIN
-
-	exists = 'f';
-	FOR rec IN SELECT * FROM pg_class WHERE relname = 'authorization_table'
-	LOOP
-		exists = 't';
-	END LOOP;
-
-	IF NOT exists
-	THEN
-		"query" = 'CREATE TABLE authorization_table (
-			toid oid, -- table oid
-			rid text, -- row id
-			expires timestamp,
-			authid text
-		)';
-		EXECUTE "query";
-	END IF;
-
-	exists = 'f';
-	FOR rec IN SELECT * FROM pg_class WHERE relname = 'authorized_tables'
-	LOOP
-		exists = 't';
-	END LOOP;
-
-	IF NOT exists THEN
-		"query" = 'CREATE VIEW authorized_tables AS ' ||
-			'SELECT ' ||
-			'n.nspname as schema, ' ||
-			'c.relname as table, trim(' ||
-			quote_literal(chr(92) || '000') ||
-			' from t.tgargs) as id_column ' ||
-			'FROM pg_trigger t, pg_class c, pg_proc p ' ||
-			', pg_namespace n ' ||
-			'WHERE p.proname = ' || quote_literal('checkauthtrigger') ||
-			' AND c.relnamespace = n.oid' ||
-			' AND t.tgfoid = p.oid and t.tgrelid = c.oid';
-		EXECUTE "query";
-	END IF;
-
-	RETURN 'Long transactions support enabled';
-END;
-$$
-LANGUAGE 'plpgsql';
-
---
--- Check if Long transactions support is enabled
---
-CREATE OR REPLACE FUNCTION LongTransactionsEnabled()
-	RETURNS bool
-AS $$
-DECLARE
-	rec RECORD;
-BEGIN
-	FOR rec IN SELECT oid FROM pg_class WHERE relname = 'authorized_tables'
-	LOOP
-		return 't';
-	END LOOP;
-	return 'f';
-END;
-$$
-LANGUAGE 'plpgsql';
-
---
--- Disable Long transactions support
---
---  (1) Drop any long_xact trigger
---  (2) Drop the authorization_table
---  (3) KEEP the authorized_tables view
---
-CREATE OR REPLACE FUNCTION DisableLongTransactions()
-	RETURNS TEXT
-	AS $$
-DECLARE
-	rec RECORD;
-
-BEGIN
-
-	--
-	-- Drop all triggers applied by CheckAuth()
-	--
-	FOR rec IN
-		SELECT c.relname, t.tgname, t.tgargs FROM pg_trigger t, pg_class c, pg_proc p
-		WHERE p.proname = 'checkauthtrigger' and t.tgfoid = p.oid and t.tgrelid = c.oid
-	LOOP
-		EXECUTE 'DROP TRIGGER ' || quote_ident(rec.tgname) ||
-			' ON ' || quote_ident(rec.relname);
-	END LOOP;
-
-	--
-	-- Drop the authorization_table table
-	--
-	FOR rec IN SELECT * FROM pg_class WHERE relname = 'authorization_table' LOOP
-		DROP TABLE authorization_table;
-	END LOOP;
-
-	--
-	-- Drop the authorized_tables view
-	--
-	FOR rec IN SELECT * FROM pg_class WHERE relname = 'authorized_tables' LOOP
-		DROP VIEW authorized_tables;
-	END LOOP;
-
-	RETURN 'Long transactions support disabled';
-END;
-$$
-LANGUAGE 'plpgsql';
-
----------------------------------------------------------------
--- END
----------------------------------------------------------------
-
-
 ---------------------------------------------------------------------------
 --
 -- PostGIS - Spatial Types for PostgreSQL
@@ -6196,43 +6185,43 @@ LANGUAGE 'plpgsql';
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_typmod_in(cstring[])
 	RETURNS integer
-	AS '$libdir/postgis-3.2','geography_typmod_in'
+	AS '$libdir/postgis-3.5','geography_typmod_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_typmod_out(integer)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2','postgis_typmod_out'
+	AS '$libdir/postgis-3.5','postgis_typmod_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_in(cstring, oid, integer)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_in'
+	AS '$libdir/postgis-3.5','geography_in'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_out(geography)
 	RETURNS cstring
-	AS '$libdir/postgis-3.2','geography_out'
+	AS '$libdir/postgis-3.5','geography_out'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geography_recv(internal, oid, integer)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_recv'
+	AS '$libdir/postgis-3.5','geography_recv'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geography_send(geography)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','geography_send'
+	AS '$libdir/postgis-3.5','geography_send'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_analyze(internal)
 	RETURNS bool
-	AS '$libdir/postgis-3.2','gserialized_analyze_nd'
+	AS '$libdir/postgis-3.5','gserialized_analyze_nd'
 	LANGUAGE 'c' VOLATILE STRICT;
 
 -- Availability: 1.5.0
@@ -6255,7 +6244,7 @@ CREATE TYPE geography (
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography(geography, integer, boolean)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_enforce_typmod'
+	AS '$libdir/postgis-3.5','geography_enforce_typmod'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
@@ -6265,13 +6254,13 @@ CREATE CAST (geography AS geography) WITH FUNCTION geography(geography, integer,
 -- Changed: 2.1.4 ticket #2870 changed to use geography bytea func instead of geometry bytea
 CREATE OR REPLACE FUNCTION geography(bytea)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_from_binary'
+	AS '$libdir/postgis-3.5','geography_from_binary'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION bytea(geography)
 	RETURNS bytea
-	AS '$libdir/postgis-3.2','LWGEOM_to_bytea'
+	AS '$libdir/postgis-3.5','LWGEOM_to_bytea'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.0.0
@@ -6282,68 +6271,68 @@ CREATE CAST (geography AS bytea) WITH FUNCTION bytea(geography) AS IMPLICIT;
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AsText(geography)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asText'
+	AS '$libdir/postgis-3.5','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.5.0
-CREATE OR REPLACE FUNCTION ST_AsText(geography, int4)
+CREATE OR REPLACE FUNCTION ST_AsText(geography, integer)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asText'
+	AS '$libdir/postgis-3.5','LWGEOM_asText'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_AsText(text)
 	RETURNS text AS
 	$$ SELECT ST_AsText($1::geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-        COST 500;
+        COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeographyFromText(text)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_from_text'
+	AS '$libdir/postgis-3.5','geography_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeogFromText(text)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_from_text'
+	AS '$libdir/postgis-3.5','geography_from_text'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeogFromWKB(bytea)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_from_binary'
+	AS '$libdir/postgis-3.5','geography_from_binary'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_typmod_dims(integer)
 	RETURNS integer
-	AS '$libdir/postgis-3.2','postgis_typmod_dims'
+	AS '$libdir/postgis-3.5','postgis_typmod_dims'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_typmod_srid(integer)
 	RETURNS integer
-	AS '$libdir/postgis-3.2','postgis_typmod_srid'
+	AS '$libdir/postgis-3.5','postgis_typmod_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_typmod_type(integer)
 	RETURNS text
-	AS '$libdir/postgis-3.2','postgis_typmod_type'
+	AS '$libdir/postgis-3.5','postgis_typmod_type'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 -- Changed: 2.4.0 Limit to only list things that are tables
 CREATE OR REPLACE VIEW geography_columns AS
 	SELECT
-		current_database() AS f_table_catalog,
+		pg_catalog.current_database() AS f_table_catalog,
 		n.nspname AS f_table_schema,
 		c.relname AS f_table_name,
 		a.attname AS f_geography_column,
@@ -6367,7 +6356,7 @@ CREATE OR REPLACE VIEW geography_columns AS
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography(geometry)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_from_geometry'
+	AS '$libdir/postgis-3.5','geography_from_geometry'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
@@ -6376,7 +6365,7 @@ CREATE CAST (geometry AS geography) WITH FUNCTION geography(geometry) AS IMPLICI
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geometry(geography)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','geometry_from_geography'
+	AS '$libdir/postgis-3.5','geometry_from_geography'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
@@ -6387,51 +6376,51 @@ CREATE CAST (geography AS geometry) WITH FUNCTION geometry(geography) ;
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION geography_gist_consistent(internal,geography,int4)
+CREATE OR REPLACE FUNCTION geography_gist_consistent(internal,geography,integer)
 	RETURNS bool
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_consistent'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_consistent'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_compress(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2','gserialized_gist_compress'
+	AS '$libdir/postgis-3.5','gserialized_gist_compress'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_penalty(internal,internal,internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_penalty'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_penalty'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_picksplit(internal, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_picksplit'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_picksplit'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_union(bytea, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_union'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_union'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_same(box2d, box2d, internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_same'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_same'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gist_decompress(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_decompress'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_decompress'
 	LANGUAGE 'c';
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_overlaps(geography, geography)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_overlaps'
+	AS '$libdir/postgis-3.5' ,'gserialized_overlaps'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
@@ -6443,7 +6432,7 @@ CREATE OPERATOR && (
 -- Availability: 2.2.0
 CREATE OR REPLACE FUNCTION geography_distance_knn(geography, geography)
   RETURNS float8
-  AS '$libdir/postgis-3.2','geography_distance_knn'
+  AS '$libdir/postgis-3.5','geography_distance_knn'
   LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
   COST 100;
 
@@ -6454,9 +6443,9 @@ CREATE OPERATOR <-> (
 );
 
 -- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION geography_gist_distance(internal, geography, int4)
+CREATE OR REPLACE FUNCTION geography_gist_distance(internal, geography, integer)
 	RETURNS float8
-	AS '$libdir/postgis-3.2' ,'gserialized_gist_geog_distance'
+	AS '$libdir/postgis-3.5' ,'gserialized_gist_geog_distance'
 	LANGUAGE 'c';
 
 
@@ -6471,8 +6460,8 @@ CREATE OPERATOR CLASS gist_geography_ops
 -- Availability: 2.2.0
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
 -- Availability: 2.2.0
-	FUNCTION        8        geography_gist_distance (internal, geography, int4),
-	FUNCTION        1        geography_gist_consistent (internal, geography, int4),
+	FUNCTION        8        geography_gist_distance (internal, geography, integer),
+	FUNCTION        1        geography_gist_consistent (internal, geography, integer),
 	FUNCTION        2        geography_gist_union (bytea, internal),
 	FUNCTION        3        geography_gist_compress (internal),
 	FUNCTION        4        geography_gist_decompress (internal),
@@ -6493,13 +6482,13 @@ CREATE OPERATOR CLASS gist_geography_ops
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_geog(gidx, geography)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_gidx_geog_overlaps'
+AS '$libdir/postgis-3.5','gserialized_gidx_geog_overlaps'
 LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_geog(gidx, gidx)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_gidx_gidx_overlaps'
+AS '$libdir/postgis-3.5','gserialized_gidx_gidx_overlaps'
 LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 2.3.0
@@ -6539,7 +6528,7 @@ CREATE OPERATOR && (
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION geog_brin_inclusion_add_value(internal, internal, internal, internal) RETURNS boolean
-        AS '$libdir/postgis-3.2','geog_brin_inclusion_add_value'
+        AS '$libdir/postgis-3.5','geog_brin_inclusion_add_value'
         LANGUAGE 'c';
 
 -- Availability: 2.3.0
@@ -6565,37 +6554,37 @@ CREATE OPERATOR CLASS brin_geography_inclusion_ops
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_lt(geography, geography)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'geography_lt'
+	AS '$libdir/postgis-3.5', 'geography_lt'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_le(geography, geography)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'geography_le'
+	AS '$libdir/postgis-3.5', 'geography_le'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_gt(geography, geography)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'geography_gt'
+	AS '$libdir/postgis-3.5', 'geography_gt'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_ge(geography, geography)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'geography_ge'
+	AS '$libdir/postgis-3.5', 'geography_ge'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_eq(geography, geography)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'geography_eq'
+	AS '$libdir/postgis-3.5', 'geography_eq'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_cmp(geography, geography)
 	RETURNS integer
-	AS '$libdir/postgis-3.2', 'geography_cmp'
+	AS '$libdir/postgis-3.5', 'geography_cmp'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 --
@@ -6657,18 +6646,18 @@ CREATE OPERATOR CLASS btree_geography_ops
 --
 
 -- Changed 2.0.0 to use default args and named args
-CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography, rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15)
+CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography, rel integer DEFAULT 0, maxdecimaldigits integer DEFAULT 15)
 	RETURNS text
-	AS '$libdir/postgis-3.2','geography_as_svg'
+	AS '$libdir/postgis-3.5','geography_as_svg'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 	RETURNS text AS
 	$$ SELECT ST_AsSVG($1::geometry,0,15);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-        COST 500;
+        COST 250;
 
 --
 -- GML OUTPUT
@@ -6679,17 +6668,17 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 -- Changed: 2.0.0 to use default args and allow named args
 -- Changed: 2.1.0 enhance to allow id value
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
+CREATE OR REPLACE FUNCTION ST_AsGML(version integer, geog geography, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
 	RETURNS text
-	AS '$libdir/postgis-3.2','geography_as_gml'
+	AS '$libdir/postgis-3.5','geography_as_gml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
-CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
+CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0, nprefix text DEFAULT 'gml', id text DEFAULT '')
 	RETURNS text
-	AS '$libdir/postgis-3.2','geography_as_gml'
+	AS '$libdir/postgis-3.5','geography_as_gml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Change 2.0.0 to use base function
@@ -6697,7 +6686,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 	RETURNS text AS
 	$$ SELECT _ST_AsGML(2,$1::geometry,15,0, NULL, NULL);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-        COST 500;
+        COST 250;
 
 --
 -- KML OUTPUT
@@ -6705,12 +6694,12 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 
 -- AsKML(geography,precision)
 -- Changed: 2.0.0 to use default args and named args
--- Replaces ST_AsKML(geography, int4) deprecated in 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT '')
+-- Replaces ST_AsKML(geography, integer) deprecated in 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits integer DEFAULT 15, nprefix text DEFAULT '')
 	RETURNS text
-	AS '$libdir/postgis-3.2','geography_as_kml'
+	AS '$libdir/postgis-3.5','geography_as_kml'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Deprecated 2.0.0
@@ -6718,17 +6707,17 @@ CREATE OR REPLACE FUNCTION ST_AsKML(text)
 	RETURNS text AS
 	$$ SELECT ST_AsKML($1::geometry, 15);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-        COST 500;
+        COST 250;
 
 --
 -- GeoJson Output
 --
 
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 9, options int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits integer DEFAULT 9, options integer DEFAULT 0)
 	RETURNS text
-	AS '$libdir/postgis-3.2','geography_as_geojson'
+	AS '$libdir/postgis-3.5','geography_as_geojson'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Deprecated in 2.0.0
@@ -6736,7 +6725,7 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	RETURNS text AS
 	$$ SELECT ST_AsGeoJson($1::geometry, 9, 0);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-        COST 500;
+        COST 250;
 
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -6744,11 +6733,12 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 -- Availability: 1.5.0
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
+-- Replaces ST_Distance(geography, geography) deprecated in 3.0.0
 CREATE OR REPLACE FUNCTION ST_Distance(geog1 geography, geog2 geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','geography_distance'
+	AS '$libdir/postgis-3.5','geography_distance'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Distance(text, text)
@@ -6760,7 +6750,7 @@ CREATE OR REPLACE FUNCTION ST_Distance(text, text)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_expand'
+	AS '$libdir/postgis-3.5','geography_expand'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -6773,9 +6763,9 @@ CREATE OR REPLACE FUNCTION _ST_Expand(geography, float8)
 -- Calculate the distance in geographics *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography, float8, boolean)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','geography_distance_uncached'
+	AS '$libdir/postgis-3.5','geography_distance_uncached'
 	LANGUAGE 'c' IMMUTABLE STRICT
-	COST 10000;
+	COST 5000;
 
 -- Calculate the distance in geographics *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography, boolean)
@@ -6793,9 +6783,9 @@ CREATE OR REPLACE FUNCTION _ST_DistanceUnCached(geography, geography)
 -- *without* using the caching code line
 CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography, float8, boolean)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','geography_distance_tree'
+	AS '$libdir/postgis-3.5','geography_distance_tree'
 	LANGUAGE 'c' IMMUTABLE STRICT
-	COST 10000;
+	COST 5000;
 
 -- Calculate the distance in geographics using the circular tree code, but
 -- *without* using the caching code line
@@ -6807,9 +6797,9 @@ CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography)
 -- Calculate the dwithin relation *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8, boolean)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2','geography_dwithin_uncached'
+	AS '$libdir/postgis-3.5','geography_dwithin_uncached'
 	LANGUAGE 'c' IMMUTABLE STRICT
-	COST 10000;
+	COST 5000;
 
 -- Calculate the dwithin relation *without* using the caching code line or tree code
 CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8)
@@ -6822,9 +6812,9 @@ CREATE OR REPLACE FUNCTION _ST_DWithinUnCached(geography, geography, float8)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Area(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','geography_area'
+	AS '$libdir/postgis-3.5','geography_area'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Area(text)
@@ -6835,9 +6825,9 @@ CREATE OR REPLACE FUNCTION ST_Area(text)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Length(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','geography_length'
+	AS '$libdir/postgis-3.5','geography_length'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Length(text)
@@ -6848,68 +6838,213 @@ CREATE OR REPLACE FUNCTION ST_Length(text)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Project(geog geography, distance float8, azimuth float8)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_project'
+	AS '$libdir/postgis-3.5','geography_project'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_Project(geog_from geography, geog_to geography, distance float8)
+	RETURNS geography
+	AS '$libdir/postgis-3.5','geography_project_geography'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Azimuth(geog1 geography, geog2 geography)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','geography_azimuth'
+	AS '$libdir/postgis-3.5','geography_azimuth'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Perimeter(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
-	AS '$libdir/postgis-3.2','geography_perimeter'
+	AS '$libdir/postgis-3.5','geography_perimeter'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_PointOutside(geography)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_point_outside'
+	AS '$libdir/postgis-3.5','geography_point_outside'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 1;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Segmentize(geog geography, max_segment_length float8)
 	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_segmentize'
+	AS '$libdir/postgis-3.5','geography_segmentize'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_BestSRID(geography, geography)
 	RETURNS integer
-	AS '$libdir/postgis-3.2','geography_bestsrid'
+	AS '$libdir/postgis-3.5','geography_bestsrid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_BestSRID(geography)
 	RETURNS integer
-	AS '$libdir/postgis-3.2','geography_bestsrid'
+	AS '$libdir/postgis-3.5','geography_bestsrid'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
+	RETURNS bytea
+	AS '$libdir/postgis-3.5','LWGEOM_asBinary'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 50;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsBinary(geography, text)
+	RETURNS bytea
+	AS '$libdir/postgis-3.5','LWGEOM_asBinary'
+	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
+	COST 50;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
+	RETURNS TEXT
+	AS '$libdir/postgis-3.5','LWGEOM_asEWKT'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+CREATE OR REPLACE FUNCTION ST_AsEWKT(geography, integer)
+	RETURNS TEXT
+	AS '$libdir/postgis-3.5','LWGEOM_asEWKT'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+-- Availability: 2.0.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_AsEWKT(text)
+	RETURNS text AS
+	$$ SELECT ST_AsEWKT($1::geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
+        COST 250;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION GeometryType(geography)
+	RETURNS text
+	AS '$libdir/postgis-3.5', 'LWGEOM_getTYPE'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_Summary(geography)
+	RETURNS text
+	AS '$libdir/postgis-3.5', 'LWGEOM_summary'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 50;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_GeoHash(geog geography, maxchars integer DEFAULT 0)
+	RETURNS TEXT
+	AS '$libdir/postgis-3.5', 'ST_GeoHash'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_SRID(geog geography)
+	RETURNS integer
+	AS '$libdir/postgis-3.5', 'LWGEOM_get_srid'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 50;
+
+-- Availability: 2.2.0
+CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid integer)
+	RETURNS geography
+	AS '$libdir/postgis-3.5', 'LWGEOM_set_srid'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 50;
+
+-- Availability: 2.4.0
+CREATE OR REPLACE FUNCTION ST_Centroid(geography, use_spheroid boolean DEFAULT true)
+	RETURNS geography
+	AS '$libdir/postgis-3.5','geography_centroid'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+
+-- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_Centroid(text)
+	RETURNS geometry AS
+	$$ SELECT ST_Centroid($1::geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-----------------------------------------------------------------------------
+
+-- Only implemented for polygon-over-point
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_Covers(geog1 geography, geog2 geography)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5','geography_covers'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Stop calculation and return immediately once distance is less than tolerance
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_DWithin(geog1 geography, geog2 geography, tolerance float8, use_spheroid boolean DEFAULT true)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5','geography_dwithin'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Only implemented for polygon-over-point
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION _ST_CoveredBy(geog1 geography, geog2 geography)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5','geography_coveredby'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Covers(geog1 geography, geog2 geography)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5','geography_covers'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 1.5.0
+-- Changed: 3.0.0 to use default and named args
+-- Replaces ST_DWithin(geography, geography, float8) deprecated in 3.0.0
+CREATE OR REPLACE FUNCTION ST_DWithin(geog1 geography, geog2 geography, tolerance float8, use_spheroid boolean DEFAULT true)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5','geography_dwithin'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 3.0.0
+CREATE OR REPLACE FUNCTION ST_CoveredBy(geog1 geography, geog2 geography)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5','geography_coveredby'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_Intersects(geog1 geography, geog2 geography)
+	RETURNS boolean
+	AS '$libdir/postgis-3.5','geography_intersects'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+-- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
 	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2), 4326))'
+	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2), ST_SRID($1)))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, integer)
 	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2, $3), 4326))'
+	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2, $3), ST_SRID($1)))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.3.x
 CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8, text)
 	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2, $3), 4326))'
+	AS 'SELECT geography(ST_Transform(ST_Buffer(ST_Transform(geometry($1), _ST_BestSRID($1)), $2, $3), ST_SRID($1)))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
@@ -6933,7 +7068,7 @@ CREATE OR REPLACE FUNCTION ST_Buffer(text, float8, text)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
 	RETURNS geography
-	AS 'SELECT geography(ST_Transform(ST_Intersection(ST_Transform(geometry($1), _ST_BestSRID($1, $2)), ST_Transform(geometry($2), _ST_BestSRID($1, $2))), 4326))'
+	AS 'SELECT geography(ST_Transform(ST_Intersection(ST_Transform(geometry($1), _ST_BestSRID($1, $2)), ST_Transform(geometry($2), _ST_BestSRID($1, $2))), ST_SRID($1)))'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
@@ -6941,149 +7076,7 @@ CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 	RETURNS geometry AS
 	$$ SELECT ST_Intersection($1::geometry, $2::geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
-	RETURNS bytea
-	AS '$libdir/postgis-3.2','LWGEOM_asBinary'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 50;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsBinary(geography, text)
-	RETURNS bytea
-	AS '$libdir/postgis-3.2','LWGEOM_asBinary'
-	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 50;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
-	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asEWKT'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
-
-CREATE OR REPLACE FUNCTION ST_AsEWKT(geography, int4)
-	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asEWKT'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
-
--- Availability: 2.0.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
-CREATE OR REPLACE FUNCTION ST_AsEWKT(text)
-	RETURNS text AS
-	$$ SELECT ST_AsEWKT($1::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE
-        COST 500;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION GeometryType(geography)
-	RETURNS text
-	AS '$libdir/postgis-3.2', 'LWGEOM_getTYPE'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_Summary(geography)
-	RETURNS text
-	AS '$libdir/postgis-3.2', 'LWGEOM_summary'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 50;
-
--- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION ST_GeoHash(geog geography, maxchars int4 DEFAULT 0)
-	RETURNS TEXT
-	AS '$libdir/postgis-3.2', 'ST_GeoHash'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
-
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_SRID(geog geography)
-	RETURNS int4
-	AS '$libdir/postgis-3.2', 'LWGEOM_get_srid'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 50;
-
--- Availability: 2.2.0
-CREATE OR REPLACE FUNCTION ST_SetSRID(geog geography, srid int4)
-	RETURNS geography
-	AS '$libdir/postgis-3.2', 'LWGEOM_set_srid'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 50;
-
--- Availability: 2.4.0
-CREATE OR REPLACE FUNCTION ST_Centroid(geography, use_spheroid boolean DEFAULT true)
-	RETURNS geography
-	AS '$libdir/postgis-3.2','geography_centroid'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
-
-
--- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
-CREATE OR REPLACE FUNCTION ST_Centroid(text)
-	RETURNS geometry AS
-	$$ SELECT ST_Centroid($1::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
-
------------------------------------------------------------------------------
-
--- Only implemented for polygon-over-point
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_Covers(geog1 geography, geog2 geography)
-	RETURNS boolean
-	AS '$libdir/postgis-3.2','geography_covers'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
--- Stop calculation and return immediately once distance is less than tolerance
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_DWithin(geog1 geography, geog2 geography, tolerance float8, use_spheroid boolean DEFAULT true)
-	RETURNS boolean
-	AS '$libdir/postgis-3.2','geography_dwithin'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
--- Only implemented for polygon-over-point
--- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION _ST_CoveredBy(geog1 geography, geog2 geography)
-	RETURNS boolean
-	AS '$libdir/postgis-3.2','geography_coveredby'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
-
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Covers(geog1 geography, geog2 geography)
-	RETURNS boolean
-	AS '$libdir/postgis-3.2','geography_covers'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
--- Availability: 1.5.0
--- Changed: 3.0.0 to use default and named args
--- Replaces ST_DWithin(geography, geography, float8) deprecated in 3.0.0
-CREATE OR REPLACE FUNCTION ST_DWithin(geog1 geography, geog2 geography, tolerance float8, use_spheroid boolean DEFAULT true)
-	RETURNS boolean
-	AS '$libdir/postgis-3.2','geography_dwithin'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
--- Availability: 3.0.0
-CREATE OR REPLACE FUNCTION ST_CoveredBy(geog1 geography, geog2 geography)
-	RETURNS boolean
-	AS '$libdir/postgis-3.2','geography_coveredby'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_Intersects(geog1 geography, geog2 geography)
-	RETURNS boolean
-	AS '$libdir/postgis-3.2','geography_intersects'
-	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
-
-
+	COST 5000;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 CREATE OR REPLACE FUNCTION ST_Covers(text, text)
@@ -7112,6 +7105,79 @@ CREATE OR REPLACE FUNCTION ST_Intersects(text, text)
 
 -----------------------------------------------------------------------------
 
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ClosestPoint(geography, geography, use_spheroid boolean DEFAULT true)
+ 	RETURNS geography
+	AS '$libdir/postgis-3.5', 'geography_closestpoint'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ClosestPoint(text, text)
+	RETURNS geometry AS
+	$$ SELECT ST_ClosestPoint($1::geometry, $2::geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ShortestLine(geography, geography, use_spheroid boolean DEFAULT true)
+	RETURNS geography
+	AS '$libdir/postgis-3.5', 'geography_shortestline'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_ShortestLine(text, text)
+	RETURNS geometry AS
+	$$ SELECT ST_ShortestLine($1::geometry, $2::geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineSubstring(geography, float8, float8)
+	RETURNS geography
+	AS '$libdir/postgis-3.5', 'geography_line_substring'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineSubstring(text, float8, float8)
+	RETURNS geometry AS
+	$$ SELECT ST_LineSubstring($1::geometry, $2, $3);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geography, geography, use_spheroid boolean DEFAULT true)
+	RETURNS float
+	AS '$libdir/postgis-3.5', 'geography_line_locate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineLocatePoint(text, text)
+	RETURNS float AS
+	$$ SELECT ST_LineLocatePoint($1::geometry, $2::geometry);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoints(geography, float8, use_spheroid boolean DEFAULT true, repeat boolean DEFAULT true)
+	RETURNS geography
+	AS '$libdir/postgis-3.5', 'geography_line_interpolate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoints(text, float8)
+	RETURNS geometry AS
+	$$ SELECT ST_LineInterpolatePoints($1::geometry, $2);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(geography, float8, use_spheroid boolean DEFAULT true)
+	RETURNS geography
+	AS '$libdir/postgis-3.5', 'geography_line_interpolate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.4.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(text, float8)
+	RETURNS geometry AS
+	$$ SELECT ST_LineInterpolatePoint($1::geometry, $2);  $$
+	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE;
+
+----------------------------------------------------------------
 
 
 -- Availability: 2.2.0
@@ -7119,6 +7185,13 @@ CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry)
 	RETURNS FLOAT8 AS
 	'select ST_distance( geography($1), geography($2),false)'
 	LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE;
+
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION ST_DistanceSphere(geom1 geometry, geom2 geometry, radius float8)
+	RETURNS FLOAT8
+	AS '$libdir/postgis-3.5','LWGEOM_distance_sphere'
+	LANGUAGE 'c' IMMUTABLE STRICT
+ 	COST 5000;
 
 ---------------------------------------------------------------
 -- GEOMETRY_COLUMNS view support functions
@@ -7216,7 +7289,7 @@ $$
 	WHERE (upper(old_name) = upper($1) OR upper(new_name) = upper($1))
 		AND coord_dimension = $2;
 $$
-LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE COST 10000;
+LANGUAGE 'sql' IMMUTABLE STRICT PARALLEL SAFE COST 5000;
 
 -- Availability: 2.0.0
 -- TODO: Can't deprecate this because UpdateGeometrySRID still uses them
@@ -7235,7 +7308,7 @@ SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integ
 		 AND a.attnum = ANY (s.conkey)
 		 AND s.consrc LIKE '%srid(% = %';
 $$
-LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE COST 500;
+LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE COST 250;
 
 -- Availability: 2.0.0
 -- TODO: Can't deprecate this because UpdateGeometrySRID still uses them
@@ -7254,7 +7327,7 @@ SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
 		 AND a.attnum = ANY (s.conkey)
 		 AND s.consrc LIKE '%ndims(% = %';
 $$
-LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE COST 500;
+LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE COST 250;
 
 -- support function to pull out geometry type from constraint check
 -- will return pretty name instead of ugly name
@@ -7275,7 +7348,7 @@ SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
 		 AND a.attnum = ANY (s.conkey)
 		 AND s.consrc LIKE '%geometrytype(% = %';
 $$
-LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE COST 500;
+LANGUAGE 'sql' STABLE STRICT PARALLEL SAFE COST 250;
 
 -- Availability: 2.0.0
 -- Changed: 2.1.8 significant performance improvement for constraint based columns
@@ -7344,33 +7417,33 @@ CREATE OR REPLACE RULE geometry_columns_delete AS
 
 CREATE OR REPLACE FUNCTION ST_3DDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'ST_3DDistance'
+	AS '$libdir/postgis-3.5', 'ST_3DDistance'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 CREATE OR REPLACE FUNCTION ST_3DMaxDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'LWGEOM_maxdistance3d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_maxdistance3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 CREATE OR REPLACE FUNCTION ST_3DClosestPoint(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_closestpoint3d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_closestpoint3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 CREATE OR REPLACE FUNCTION ST_3DShortestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_shortestline3d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_shortestline3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 CREATE OR REPLACE FUNCTION ST_3DLongestLine(geom1 geometry, geom2 geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_longestline3d'
+	AS '$libdir/postgis-3.5', 'LWGEOM_longestline3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 ---------------------------------------------------------------
 -- SQL-MM
@@ -7378,7 +7451,7 @@ CREATE OR REPLACE FUNCTION ST_3DLongestLine(geom1 geometry, geom2 geometry)
 -- PostGIS equivalent function: ST_ndims(geometry)
 CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 	RETURNS smallint
-	AS '$libdir/postgis-3.2', 'LWGEOM_ndims'
+	AS '$libdir/postgis-3.5', 'LWGEOM_ndims'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 1;
 
@@ -7400,24 +7473,39 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 --    1: Symmetric output (result in same vertices when inverting the curve)
 --
 -- Availability: 2.4.0
+-- Changed: 2.5.0 to add defaults
+-- Replaces ST_CurveToLine(geometry, integer) deprecated in 2.5.0
+-- Replaces ST_CurveToLine(geometry) deprecated in 2.5.0
 --
 CREATE OR REPLACE FUNCTION ST_CurveToLine(geom geometry, tol float8 DEFAULT 32, toltype integer DEFAULT 0, flags integer DEFAULT 0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_CurveToLine'
+	AS '$libdir/postgis-3.5', 'ST_CurveToLine'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
 
 CREATE OR REPLACE FUNCTION ST_HasArc(Geometry geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2', 'LWGEOM_has_arc'
+	AS '$libdir/postgis-3.5', 'LWGEOM_has_arc'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_line_desegmentize'
+	AS '$libdir/postgis-3.5', 'LWGEOM_line_desegmentize'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 10000;
+	COST 5000;
+
+CREATE OR REPLACE FUNCTION ST_NumCurves(Geometry geometry)
+	RETURNS integer
+	AS '$libdir/postgis-3.5', 'ST_NumCurves'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
+
+CREATE OR REPLACE FUNCTION ST_CurveN(Geometry geometry, i integer)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'ST_CurveN'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 5000;
 
 -------------------------------------------------------------------------------
 -- SQL/MM - SQL Functions on type ST_Point
@@ -7426,35 +7514,35 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 -- PostGIS equivalent function: ST_MakePoint(XCoordinate float8,YCoordinate float8)
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'LWGEOM_makepoint'
+	AS '$libdir/postgis-3.5', 'LWGEOM_makepoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8, srid integer)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Point'
+	AS '$libdir/postgis-3.5', 'ST_Point'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_PointZ(XCoordinate float8, YCoordinate float8, ZCoordinate float8, srid integer DEFAULT 0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_PointZ'
+	AS '$libdir/postgis-3.5', 'ST_PointZ'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_PointM(XCoordinate float8, YCoordinate float8, MCoordinate float8, srid integer DEFAULT 0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_PointM'
+	AS '$libdir/postgis-3.5', 'ST_PointM'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
 -- Availability: 3.2.0
 CREATE OR REPLACE FUNCTION ST_PointZM(XCoordinate float8, YCoordinate float8, ZCoordinate float8, MCoordinate float8, srid integer DEFAULT 0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_PointZM'
+	AS '$libdir/postgis-3.5', 'ST_PointZM'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -7471,7 +7559,7 @@ CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
 CREATE OR REPLACE FUNCTION ST_WKBToSQL(WKB bytea)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2','LWGEOM_from_WKB'
+	AS '$libdir/postgis-3.5','LWGEOM_from_WKB'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
@@ -7481,31 +7569,31 @@ CREATE OR REPLACE FUNCTION ST_WKBToSQL(WKB bytea)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_LocateBetween(Geometry geometry, FromMeasure float8, ToMeasure float8, LeftRightOffset float8 default 0.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_LocateBetween'
+	AS '$libdir/postgis-3.5', 'ST_LocateBetween'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_LocateAlong(Geometry geometry, Measure float8, LeftRightOffset float8 default 0.0)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_LocateAlong'
+	AS '$libdir/postgis-3.5', 'ST_LocateAlong'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Only accepts LINESTRING as parameters.
 -- Availability: 1.4.0
 CREATE OR REPLACE FUNCTION ST_LocateBetweenElevations(Geometry geometry, FromElevation float8, ToElevation float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_LocateBetweenElevations'
+	AS '$libdir/postgis-3.5', 'ST_LocateBetweenElevations'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 	RETURNS float8
-	AS '$libdir/postgis-3.2', 'ST_InterpolatePoint'
+	AS '$libdir/postgis-3.5', 'ST_InterpolatePoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 ---------------------------------------------------------------
 -- Grid / Hexagon coverage functions
@@ -7514,7 +7602,7 @@ CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
 -- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_Hexagon(size float8, cell_i integer, cell_j integer, origin geometry DEFAULT NULL::geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Hexagon'
+	AS '$libdir/postgis-3.5', 'ST_Hexagon'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE
 	COST 50;
@@ -7522,7 +7610,7 @@ CREATE OR REPLACE FUNCTION ST_Hexagon(size float8, cell_i integer, cell_j intege
 -- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_Square(size float8, cell_i integer, cell_j integer, origin geometry DEFAULT NULL::geometry)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_Square'
+	AS '$libdir/postgis-3.5', 'ST_Square'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE
 	COST 50;
@@ -7530,18 +7618,18 @@ CREATE OR REPLACE FUNCTION ST_Square(size float8, cell_i integer, cell_j integer
 -- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_HexagonGrid(size float8, bounds geometry, OUT geom geometry, OUT i integer, OUT j integer)
 	RETURNS SETOF record
-	AS '$libdir/postgis-3.2', 'ST_ShapeGrid'
+	AS '$libdir/postgis-3.5', 'ST_ShapeGrid'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- Availability: 3.1.0
 CREATE OR REPLACE FUNCTION ST_SquareGrid(size float8, bounds geometry, OUT geom geometry, OUT i integer, OUT j integer)
 	RETURNS SETOF record
-	AS '$libdir/postgis-3.2', 'ST_ShapeGrid'
+	AS '$libdir/postgis-3.5', 'ST_ShapeGrid'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 
 -- moved to separate file cause its involved
@@ -7558,37 +7646,37 @@ CREATE OR REPLACE FUNCTION ST_SquareGrid(size float8, bounds geometry, OUT geom 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION contains_2d(box2df, geometry)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_contains_box2df_geom_2d'
+AS '$libdir/postgis-3.5','gserialized_contains_box2df_geom_2d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION is_contained_2d(box2df, geometry)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_within_box2df_geom_2d'
+AS '$libdir/postgis-3.5','gserialized_within_box2df_geom_2d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_2d(box2df, geometry)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_overlaps_box2df_geom_2d'
+AS '$libdir/postgis-3.5','gserialized_overlaps_box2df_geom_2d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_2d(box2df, box2df)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_contains_box2df_box2df_2d'
+AS '$libdir/postgis-3.5','gserialized_contains_box2df_box2df_2d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION contains_2d(box2df, box2df)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_contains_box2df_box2df_2d'
+AS '$libdir/postgis-3.5','gserialized_contains_box2df_box2df_2d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION is_contained_2d(box2df, box2df)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_contains_box2df_box2df_2d'
+AS '$libdir/postgis-3.5','gserialized_contains_box2df_box2df_2d'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
@@ -7686,13 +7774,13 @@ CREATE OPERATOR ~ (
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_nd(gidx, geometry)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_gidx_geom_overlaps'
+AS '$libdir/postgis-3.5','gserialized_gidx_geom_overlaps'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION overlaps_nd(gidx, gidx)
 RETURNS boolean
-AS '$libdir/postgis-3.2','gserialized_gidx_gidx_overlaps'
+AS '$libdir/postgis-3.5','gserialized_gidx_gidx_overlaps'
 LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
@@ -7737,19 +7825,19 @@ CREATE OPERATOR &&& (
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION geom2d_brin_inclusion_add_value(internal, internal, internal, internal)
 RETURNS boolean
-AS '$libdir/postgis-3.2','geom2d_brin_inclusion_add_value'
+AS '$libdir/postgis-3.5','geom2d_brin_inclusion_add_value'
 LANGUAGE 'c' PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION geom3d_brin_inclusion_add_value(internal, internal, internal, internal)
 RETURNS boolean
-AS '$libdir/postgis-3.2','geom3d_brin_inclusion_add_value'
+AS '$libdir/postgis-3.5','geom3d_brin_inclusion_add_value'
 LANGUAGE 'c' PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
 CREATE OR REPLACE FUNCTION geom4d_brin_inclusion_add_value(internal, internal, internal, internal)
 RETURNS boolean
-AS '$libdir/postgis-3.2','geom4d_brin_inclusion_add_value'
+AS '$libdir/postgis-3.5','geom4d_brin_inclusion_add_value'
 LANGUAGE 'c' PARALLEL SAFE COST 1;
 
 -- Availability: 2.3.0
@@ -7815,270 +7903,47 @@ CREATE OPERATOR CLASS brin_geometry_inclusion_ops_4d
 -----------------------
 
 
----------------------------------------------------------------
--- USER CONTRIBUTED
----------------------------------------------------------------
 
--- ST_ConcaveHull and Helper functions starts here --
------------------------------------------------------------------------
--- Contributed by Regina Obe and Leo Hsu
--- Availability: 2.0.0
--- Changed: 2.5.0
------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _st_concavehull(param_inputgeom geometry)
-  RETURNS geometry AS
-$$
-	DECLARE
-	vexhull geometry;
-	var_resultgeom geometry;
-	var_inputgeom geometry;
-	vexring geometry;
-	cavering geometry;
-	cavept geometry[];
-	seglength double precision;
-	var_tempgeom geometry;
-	scale_factor float := 1;
-	i integer;
-	BEGIN
-		-- First compute the ConvexHull of the geometry
-		vexhull := ST_ConvexHull(param_inputgeom);
-		var_inputgeom := param_inputgeom;
-		--A point really has no concave hull
-		IF ST_GeometryType(vexhull) = 'ST_Point' OR ST_GeometryType(vexHull) = 'ST_LineString' THEN
-			RETURN vexhull;
-		END IF;
+-- Availability: 3.3.0
+CREATE OR REPLACE FUNCTION ST_SimplifyPolygonHull(geom geometry, vertex_fraction float8, is_outer boolean DEFAULT true)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'ST_SimplifyPolygonHull'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
+	COST 5000;
 
-		-- convert the hull perimeter to a linestring so we can manipulate individual points
-		vexring := CASE WHEN ST_GeometryType(vexhull) = 'ST_LineString' THEN vexhull ELSE ST_ExteriorRing(vexhull) END;
-		IF abs(ST_X(ST_PointN(vexring,1))) < 1 THEN --scale the geometry to prevent stupid precision errors - not sure it works so make low for now
-			scale_factor := 100;
-			vexring := ST_Scale(vexring, scale_factor,scale_factor);
-			var_inputgeom := ST_Scale(var_inputgeom, scale_factor, scale_factor);
-			--RAISE NOTICE 'Scaling';
-		END IF;
-		seglength := ST_Length(vexring)/least(ST_NPoints(vexring)*2,1000) ;
 
-		vexring := ST_Segmentize(vexring, seglength);
-		-- find the point on the original geom that is closest to each point of the convex hull and make a new linestring out of it.
-		cavering := ST_Collect(
-			ARRAY(
 
-				SELECT
-					ST_ClosestPoint(var_inputgeom, pt ) As the_geom
-					FROM (
-						SELECT  ST_PointN(vexring, n ) As pt, n
-							FROM
-							generate_series(1, ST_NPoints(vexring) ) As n
-						) As pt
-
-				)
-			)
-		;
-
-		var_resultgeom := ST_MakeLine(geom)
-			FROM ST_Dump(cavering) As foo;
-
-		IF ST_IsSimple(var_resultgeom) THEN
-			var_resultgeom := ST_MakePolygon(var_resultgeom);
-			--RAISE NOTICE 'is Simple: %', var_resultgeom;
-		ELSE 
-			--RAISE NOTICE 'is not Simple: %', var_resultgeom;
-			var_resultgeom := ST_ConvexHull(var_resultgeom);
-		END IF;
-
-		IF scale_factor > 1 THEN -- scale the result back
-			var_resultgeom := ST_Scale(var_resultgeom, 1/scale_factor, 1/scale_factor);
-		END IF;
-
-		-- make sure result covers original (#3638)
-		-- Using ST_UnaryUnion since SFCGAL doesn't replace with its own implementation
-		-- and SFCGAL one chokes for some reason
-		var_resultgeom := ST_UnaryUnion(ST_Collect(param_inputgeom, var_resultgeom) );
-		RETURN var_resultgeom;
-
-	END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE COST 10000;
 
 -- Availability: 2.0.0
 -- Changed: 2.5.0
-CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false) RETURNS geometry AS
-$$
-	DECLARE
-		var_convhull geometry := ST_ForceSFS(ST_ConvexHull(param_geom));
-		var_param_geom geometry := ST_ForceSFS(param_geom);
-		var_initarea float := ST_Area(var_convhull);
-		var_newarea float := var_initarea;
-		var_div integer := 6; 
-		var_tempgeom geometry;
-		var_tempgeom2 geometry;
-		var_cent geometry;
-		var_geoms geometry[4]; 
-		var_enline geometry;
-		var_resultgeom geometry;
-		var_atempgeoms geometry[];
-		var_buf float := 1; 
-	BEGIN
-		-- We start with convex hull as our base
-		var_resultgeom := var_convhull;
+-- Enhanced: 3.3.0 implements it in C, if GEOS >= 3.10
+-- Replaces _st_concavehull(geometry) deprecated in 3.3.0-with-geos-3.11
+CREATE OR REPLACE FUNCTION ST_ConcaveHull(param_geom geometry, param_pctconvex float, param_allow_holes boolean DEFAULT false)
+	RETURNS geometry
+	AS '$libdir/postgis-3.5', 'ST_ConcaveHull'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	PARALLEL SAFE
+	COST 5000;
 
-		IF param_pctconvex = 1 THEN
-			-- this is the same as asking for the convex hull
-			return var_resultgeom;
-		ELSIF ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN -- it is as concave as it is going to get
-			IF param_allow_holes THEN -- leave the holes
-				RETURN var_param_geom;
-			ELSE -- remove the holes
-				var_resultgeom := ST_MakePolygon(ST_ExteriorRing(var_param_geom));
-				RETURN var_resultgeom;
-			END IF;
-		END IF;
-		IF ST_Dimension(var_resultgeom) > 1 AND param_pctconvex BETWEEN 0 and 0.98 THEN
-		-- get linestring that forms envelope of geometry
-			var_enline := ST_Boundary(ST_Envelope(var_param_geom));
-			var_buf := ST_Length(var_enline)/1000.0;
-			IF ST_GeometryType(var_param_geom) = 'ST_MultiPoint' AND ST_NumGeometries(var_param_geom) BETWEEN 4 and 200 THEN
-			-- we make polygons out of points since they are easier to cave in.
-			-- Note we limit to between 4 and 200 points because this process is slow and gets quadratically slow
-				var_buf := sqrt(ST_Area(var_convhull)*0.8/(ST_NumGeometries(var_param_geom)*ST_NumGeometries(var_param_geom)));
-				var_atempgeoms := ARRAY(SELECT geom FROM ST_DumpPoints(var_param_geom));
-				-- 5 and 10 and just fudge factors
-				var_tempgeom := ST_Union(ARRAY(SELECT geom
-						FROM (
-						-- fuse near neighbors together
-						SELECT DISTINCT ON (i) i,  ST_Distance(var_atempgeoms[i],var_atempgeoms[j]), ST_Buffer(ST_MakeLine(var_atempgeoms[i], var_atempgeoms[j]) , var_buf*5, 'quad_segs=3') As geom
-								FROM generate_series(1,array_upper(var_atempgeoms, 1)) As i
-									INNER JOIN generate_series(1,array_upper(var_atempgeoms, 1)) As j
-										ON (
-								 NOT ST_Intersects(var_atempgeoms[i],var_atempgeoms[j])
-									AND ST_DWithin(var_atempgeoms[i],var_atempgeoms[j], var_buf*10)
-									)
-								UNION ALL
-						-- catch the ones with no near neighbors
-								SELECT i, 0, ST_Buffer(var_atempgeoms[i] , var_buf*10, 'quad_segs=3') As geom
-								FROM generate_series(1,array_upper(var_atempgeoms, 1)) As i
-									LEFT JOIN generate_series(ceiling(array_upper(var_atempgeoms,1)/2)::integer,array_upper(var_atempgeoms, 1)) As j
-										ON (
-								 NOT ST_Intersects(var_atempgeoms[i],var_atempgeoms[j])
-									AND ST_DWithin(var_atempgeoms[i],var_atempgeoms[j], var_buf*10)
-									)
-									WHERE j IS NULL
-								ORDER BY 1, 2
-							) As foo	) );
-				IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
-					var_tempgeom := ST_ForceSFS(ST_Intersection(var_tempgeom, var_convhull));
-					IF param_allow_holes THEN
-						var_param_geom := var_tempgeom;
-					ELSIF ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
-						var_param_geom := ST_ForceSFS(ST_MakePolygon(ST_ExteriorRing(var_tempgeom)));
-					ELSE
-						var_param_geom := ST_ForceSFS(ST_ConvexHull(var_param_geom));
-					END IF;
-					-- make sure result covers original (#3638)
-					var_param_geom := ST_Union(param_geom, var_param_geom);
-					return var_param_geom;
-				ELSIF ST_IsValid(var_tempgeom) THEN
-					var_param_geom := ST_ForceSFS(ST_Intersection(var_tempgeom, var_convhull));
-				END IF;
-			END IF;
 
-			IF ST_GeometryType(var_param_geom) = 'ST_Polygon' THEN
-				IF NOT param_allow_holes THEN
-					var_param_geom := ST_ForceSFS(ST_MakePolygon(ST_ExteriorRing(var_param_geom)));
-				END IF;
-				-- make sure result covers original (#3638)
-				--var_param_geom := ST_Union(param_geom, var_param_geom);
-				return var_param_geom;
-			END IF;
-			var_cent := ST_Centroid(var_param_geom);
-			IF (ST_XMax(var_enline) - ST_XMin(var_enline) ) > var_buf AND (ST_YMax(var_enline) - ST_YMin(var_enline) ) > var_buf THEN
-					IF ST_Dwithin(ST_Centroid(var_convhull) , ST_Centroid(ST_Envelope(var_param_geom)), var_buf/2) THEN
-				-- If the geometric dimension is > 1 and the object is symettric (cutting at centroid will not work -- offset a bit)
-						var_cent := ST_Translate(var_cent, (ST_XMax(var_enline) - ST_XMin(var_enline))/1000,  (ST_YMAX(var_enline) - ST_YMin(var_enline))/1000);
-					ELSE
-						-- uses closest point on geometry to centroid. I can't explain why we are doing this
-						var_cent := ST_ClosestPoint(var_param_geom,var_cent);
-					END IF;
-					IF ST_DWithin(var_cent, var_enline,var_buf) THEN
-						var_cent := ST_centroid(ST_Envelope(var_param_geom));
-					END IF;
-					-- break envelope into 4 triangles about the centroid of the geometry and returned the clipped geometry in each quadrant
-					FOR i in 1 .. 4 LOOP
-					   var_geoms[i] := ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
-					   var_geoms[i] := ST_ForceSFS(ST_Intersection(var_param_geom, ST_Buffer(var_geoms[i],var_buf)));
-					   IF ST_IsValid(var_geoms[i]) THEN
-
-					   ELSE
-							var_geoms[i] := ST_BuildArea(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
-					   END IF;
-					END LOOP;
-					var_tempgeom := ST_Union(ARRAY[ST_ConvexHull(var_geoms[1]), ST_ConvexHull(var_geoms[2]) , ST_ConvexHull(var_geoms[3]), ST_ConvexHull(var_geoms[4])]);
-					--RAISE NOTICE 'Curr vex % ', ST_AsText(var_tempgeom);
-					IF ST_Area(var_tempgeom) <= var_newarea AND ST_IsValid(var_tempgeom)  THEN --AND ST_GeometryType(var_tempgeom) ILIKE '%Polygon'
-
-						var_tempgeom := ST_Buffer(ST_ConcaveHull(var_geoms[1],least(param_pctconvex + param_pctconvex/var_div),true),var_buf, 'quad_segs=2');
-						FOR i IN 1 .. 4 LOOP
-							var_geoms[i] := ST_Buffer(ST_ConcaveHull(var_geoms[i],least(param_pctconvex + param_pctconvex/var_div),true), var_buf, 'quad_segs=2');
-							IF ST_IsValid(var_geoms[i]) Then
-								var_tempgeom := ST_Union(var_tempgeom, var_geoms[i]);
-							ELSE
-								RAISE NOTICE 'Not valid % %', i, ST_AsText(var_tempgeom);
-								var_tempgeom := ST_Union(var_tempgeom, ST_ConvexHull(var_geoms[i]));
-							END IF;
-						END LOOP;
-
-						--RAISE NOTICE 'Curr concave % ', ST_AsText(var_tempgeom);
-						IF ST_IsValid(var_tempgeom) THEN
-							var_resultgeom := var_tempgeom;
-						END IF;
-						var_newarea := ST_Area(var_resultgeom);
-					ELSIF ST_IsValid(var_tempgeom) THEN
-						var_resultgeom := var_tempgeom;
-					END IF;
-
-					IF ST_NumGeometries(var_resultgeom) > 1  THEN
-						var_tempgeom := _ST_ConcaveHull(var_resultgeom);
-						IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) ILIKE 'ST_Polygon' THEN
-							var_resultgeom := var_tempgeom;
-						ELSE
-							var_resultgeom := ST_Buffer(var_tempgeom,var_buf, 'quad_segs=2');
-						END IF;
-					END IF;
-					IF param_allow_holes = false THEN
-					-- only keep exterior ring since we do not want holes
-						var_resultgeom := ST_MakePolygon(ST_ExteriorRing(var_resultgeom));
-					END IF;
-				ELSE
-					var_resultgeom := ST_Buffer(var_resultgeom,var_buf);
-				END IF;
-				var_resultgeom := ST_ForceSFS(ST_Intersection(var_resultgeom, ST_ConvexHull(var_param_geom)));
-			ELSE
-				-- dimensions are too small to cut
-				var_resultgeom := _ST_ConcaveHull(var_param_geom);
-			END IF;
-
-			RETURN var_resultgeom;
-	END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE COST 10000;
--- ST_ConcaveHull and Helper functions end here --
 
 -----------------------------------------------------------------------
 -- X3D OUTPUT
 -----------------------------------------------------------------------
 -- _ST_AsX3D(version, geom, precision, option, attribs)
-CREATE OR REPLACE FUNCTION _ST_AsX3D(int4, geometry, int4, int4, text)
+CREATE OR REPLACE FUNCTION _ST_AsX3D(integer, geometry, integer, integer, text)
 	RETURNS TEXT
-	AS '$libdir/postgis-3.2','LWGEOM_asX3D'
+	AS '$libdir/postgis-3.5','LWGEOM_asX3D'
 	LANGUAGE 'c' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -- ST_AsX3D(geom, precision, options)
 CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0)
 	RETURNS TEXT
 	AS $$SELECT _ST_AsX3D(3,$1,$2,$3,'');$$
 	LANGUAGE 'sql' IMMUTABLE PARALLEL SAFE
-	COST 500;
+	COST 250;
 
 -----------------------------------------------------------------------
 -- ST_Angle
@@ -8098,12 +7963,12 @@ GRANT SELECT ON TABLE spatial_ref_sys TO public;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 	RETURNS geometry
-	AS '$libdir/postgis-3.2', 'ST_3DLineInterpolatePoint'
+	AS '$libdir/postgis-3.5', 'ST_3DLineInterpolatePoint'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
 	COST 50;
 
+-- moved to separate file cause its involved
 
--- moved to separate file cause its invovled
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- SP-GiST 2D Support Functions
@@ -8111,32 +7976,32 @@ CREATE OR REPLACE FUNCTION ST_3DLineInterpolatePoint(geometry, float8)
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_config_2d(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_config_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_config_2d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_choose_2d(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_choose_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_choose_2d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_2d(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_picksplit_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_picksplit_2d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_2d(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_inner_consistent_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_inner_consistent_2d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_2d(internal, internal)
 	RETURNS bool
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_leaf_consistent_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_leaf_consistent_2d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_compress_2d(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_compress_2d'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_compress_2d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
@@ -8168,25 +8033,25 @@ CREATE OPERATOR CLASS spgist_geometry_ops_2d
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_overlaps_3d(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_overlaps_3d'
+	AS '$libdir/postgis-3.5' ,'gserialized_overlaps_3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_contains_3d(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_contains_3d'
+	AS '$libdir/postgis-3.5' ,'gserialized_contains_3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_contained_3d(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_contained_3d'
+	AS '$libdir/postgis-3.5' ,'gserialized_contained_3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_same_3d(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS '$libdir/postgis-3.2' ,'gserialized_same_3d'
+	AS '$libdir/postgis-3.5' ,'gserialized_same_3d'
 	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
@@ -8223,32 +8088,32 @@ CREATE OPERATOR ~== (
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_config_3d(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2', 'gserialized_spgist_config_3d'
+	AS '$libdir/postgis-3.5', 'gserialized_spgist_config_3d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_choose_3d(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2', 'gserialized_spgist_choose_3d'
+	AS '$libdir/postgis-3.5', 'gserialized_spgist_choose_3d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_3d(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2', 'gserialized_spgist_picksplit_3d'
+	AS '$libdir/postgis-3.5', 'gserialized_spgist_picksplit_3d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_3d(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2', 'gserialized_spgist_inner_consistent_3d'
+	AS '$libdir/postgis-3.5', 'gserialized_spgist_inner_consistent_3d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_3d(internal, internal)
 	RETURNS bool
-	AS '$libdir/postgis-3.2', 'gserialized_spgist_leaf_consistent_3d'
+	AS '$libdir/postgis-3.5', 'gserialized_spgist_leaf_consistent_3d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 2.5.0
 CREATE OR REPLACE FUNCTION geometry_spgist_compress_3d(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2', 'gserialized_spgist_compress_3d'
+	AS '$libdir/postgis-3.5', 'gserialized_spgist_compress_3d'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 2.5.0
@@ -8276,32 +8141,32 @@ CREATE OPERATOR CLASS spgist_geometry_ops_3d
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_spgist_config_nd(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_config_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_config_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_spgist_choose_nd(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_choose_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_choose_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_spgist_picksplit_nd(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_picksplit_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_picksplit_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_spgist_inner_consistent_nd(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_inner_consistent_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_inner_consistent_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_spgist_leaf_consistent_nd(internal, internal)
 	RETURNS bool
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_leaf_consistent_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_leaf_consistent_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geometry_spgist_compress_nd(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_compress_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_compress_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 3.0.0
@@ -8325,32 +8190,32 @@ CREATE OPERATOR CLASS spgist_geometry_ops_nd
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geography_spgist_config_nd(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_config_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_config_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geography_spgist_choose_nd(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_choose_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_choose_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geography_spgist_picksplit_nd(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_picksplit_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_picksplit_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geography_spgist_inner_consistent_nd(internal, internal)
 	RETURNS void
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_inner_consistent_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_inner_consistent_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geography_spgist_leaf_consistent_nd(internal, internal)
 	RETURNS bool
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_leaf_consistent_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_leaf_consistent_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 -- Availability: 3.0.0
 CREATE OR REPLACE FUNCTION geography_spgist_compress_nd(internal)
 	RETURNS internal
-	AS '$libdir/postgis-3.2' ,'gserialized_spgist_compress_nd'
+	AS '$libdir/postgis-3.5' ,'gserialized_spgist_compress_nd'
 	LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Availability: 3.0.0
@@ -8367,6 +8232,176 @@ CREATE OPERATOR CLASS spgist_geography_ops_nd
 	FUNCTION		5		geography_spgist_leaf_consistent_nd(internal, internal),
 	FUNCTION		6		geography_spgist_compress_nd(internal);
 
+CREATE OR REPLACE FUNCTION ST_Letters(letters text, font json DEFAULT NULL)
+RETURNS geometry
+AS
+$$
+DECLARE
+  letterarray text[];
+  letter text;
+  geom geometry;
+  prevgeom geometry = NULL;
+  adjustment float8 = 0.0;
+  position float8 = 0.0;
+  text_height float8 = 100.0;
+  width float8;
+  m_width float8;
+  spacing float8;
+  dist float8;
+  wordarr geometry[];
+  wordgeom geometry;
+  -- geometry has been run through replace(encode(st_astwkb(geom),'base64'), E'\n', '')
+  font_default_height float8 = 1000.0;
+  font_default json = '{
+  "!":"BgACAQhUrgsTFOQCABQAExELiwi5AgAJiggBYQmJCgAOAg4CDAIOBAoEDAYKBgoGCggICAgICAgGCgYKBgoGCgQMBAoECgQMAgoADAIKAAoADAEKAAwBCgMKAQwDCgMKAwoFCAUKBwgHBgcIBwYJBgkECwYJBAsCDQILAg0CDQANAQ0BCwELAwsDCwUJBQkFCQcHBwcHBwcFCQUJBQkFCQMLAwkDCQMLAQkACwEJAAkACwIJAAsCCQQJAgsECQQJBAkGBwYJCAcIBQgHCAUKBQoDDAUKAQwDDgEMAQ4BDg==",
+  "&":"BgABAskBygP+BowEAACZAmcAANsCAw0FDwUNBQ0FDQcLBw0HCwcLCQsJCwkLCQkJCwsJCwkLCQ0HCwcNBw8HDQUPBQ8DDwMRAw8DEQERAREBEQERABcAFQIXAhUCEwQVBBMGEwYTBhEIEQgPChEKDwoPDA0MDQwNDgsOCRAJEAkQBxAHEgUSBRQFFAMUAxQBFgEWARgAigEAFAISABICEgQQAhAEEAQQBg4GEAoOCg4MDg4ODgwSDgsMCwoJDAcMBwwFDgUMAw4DDgEOARABDgEQARIBEAASAHgAIAQeBB4GHAgaChoMGA4WDhYQFBISEhISDhQQFAwWDBYKFgoYBhgIGAQYBBgCGgAaABgBGAMYAxYHFgUWCRYJFAsUCxIPEg0SERARDhMOFQwVDBcIGQYbBhsCHQIfAR+dAgAADAAKAQoBCgEIAwgFBgUGBQYHBAUEBwQHAgcCBwIHAAcABwAHAQcBBwMHAwUDBwUFBQUHBQUBBwMJAQkBCQAJAJcBAAUCBQAFAgUEBQIDBAUEAwQDBgMEAQYDBgEGAAgBBgAKSeECAJ8BFi84HUQDQCAAmAKNAQAvExMx",
+  "\"":"BgACAQUmwguEAgAAkwSDAgAAlAQBBfACAIACAACTBP8BAACUBA==",
+  "''":"BgABAQUmwguEAgAAkwSDAgAAlAQ=",
+  "(":"BgABAUOQBNwLDScNKw0rCysLLwsxCTEJMwc1BzcHNwM7AzsDPwE/AEEANwI1AjMEMwIzBjEGLwYvCC0ILQgrCCkKKQonCicMJbkCAAkqCSoHLAksBywFLgcuBS4FMAMwAzADMgEwATQBMgA0ADwCOgI6BDoEOAY4BjYINgg2CjQKMgoyCjIMMAwwDi7AAgA=",
+  ")":"BgABAUMQ3Au6AgAOLQwvDC8KMQoxCjEKMwg1CDUGNQY3BDcEOQI5AjkAOwAzATEBMQExAy8DLwMvBS8FLQctBS0HKwktBykJKwkpswIADCYKKAooCioIKggsCC4ILgYwBjAGMgQ0AjQCNAI2ADgAQgFAAz4DPAM8BzgHOAc2CTQJMgsyCzALLg0sDSoNKg==",
+  "+":"BgABAQ3IBOwGALcBuAEAANUBtwEAALcB0wEAALgBtwEAANYBuAEAALgB1AEA",
+  "/":"BgABAQVCAoIDwAuyAgCFA78LrQIA",
+  "4":"BgABAhDkBr4EkgEAEREApwJ/AADxARIR5QIAEhIA9AHdAwAA7ALIA9AG6gIAEREA8QYFqwIAAIIDwwH/AgABxAEA",
+  "v":"BgABASDmA5AEPu4CROwBExb6AgAZFdMC0wgUFaECABIU0wLWCBcW+AIAExVE6wEEFQQXBBUEFwQVBBUEFwQVBBUEFwQVBBUEFwQXBBUEFwYA",
+  ",":"BgABAWMYpAEADgIOAgwCDgQMBAoGDAYKBgoICAgICAgICAoGCgYKBAoEDAQKBAoCDAIKAgwCCgAKAAwACgEMAQoBCgMMAwoDCgUKBQgFCgUIBwYJCAcGCQYJBAsGCQQLAg0CCwINAg0AAwABAAMAAwADAQMAAwADAAMBBQAFAQcBBwEHAwcBCQMJAQsDCwMLAw0FDQMNBQ8FDwURBxMFEwkTBxcJFwkXswEAIMgBCQYJBgkGBwYJCAcIBQgHCgUKBQoFDAEMAwwBDgEOABA=",
+  "-":"BgABAQUq0AMArALEBAAAqwLDBAA=",
+  ".":"BgABAWFOrAEADgIOAg4CDgQMBAoGDAYKBgoICAgKCAgIBgoGCgYKBgoEDAQKBAwECgIMAAwCDAAMAAwBCgAMAQoDDAMKAwoDCgUKBQgFCgUIBwgJBgcICQYJBgsGCQQLAg0CDQINAA0ADQENAQ0BCwMNAwkFCwUJBQkHBwcJBwUHBwkFCQUJBQkDCwMJAwsDCQELAAsBCwALAAsCCQALAgkECwQJBAkECQYJBgcGBwgJBgcKBQgHCgUKBQwFCgEOAwwBDgEOAA4=",
+  "0":"BgABAoMB+APaCxwAHAEaARoDFgMYBRYFFAcUBxIJEgkQCRALEAsOCwwNDA0MDQoPCg0IDwgPBhEGDwYRBA8EEQIRAhMCEQITABMA4QUAEQETAREBEQMRAxEFEQURBREHDwkPBw8JDwsNCw0LDQ0NDQsNCw8JEQkRCREJEwcTBxUFFQUVAxUDFwEXARkAGQAZAhcCFwQXBBUGEwYTCBMIEQoRCg8KDwoPDA0MDQ4NDgsOCQ4JEAkQBxAHEAUSBRIDEgMSAxIDEgESARQAEgDiBQASAhQCEgISBBIEEgYSBhIGEggQChAIEAoQDBAMDgwODg4ODA4MEgwQChIKEggUCBQIFgYWBBYGGAQYAhgCGgILZIcDHTZBEkMRHTUA4QUeOUITRBIePADiBQ==",
+  "2":"BgABAWpUwALUA44GAAoBCAEKAQgDBgMGBQYFBgUEBwQFBAUCBwIHAgUABwAHAAUBBwMFAQcFBQMHBQUHBQcFBwMJAwkBCQELAQsAC68CAAAUAhIAFAISBBQCEgQUBBIEEgYUCBIGEAgSChAKEAoQDBAMDg4ODgwQDBIMEgoSChQIFggWCBgGGAQaAhwCHAIWABQBFgEUARQDFAMSAxQFEgUSBxIHEAkQCRALDgsODQ4NDA8KDwwRCBMKEwgTBhUGFwQXBBcEGwAbABsAHQEftwPJBdIDAACpAhIPzwYAFBIArgI=",
+  "1":"BgABARCsBLALAJ0LEhERADcA2QEANwATABQSAOYIpwEAALgCERKEBAASABER",
+  "3":"BgABAZ0B/gbEC/sB0QQOAwwBDAMMAwwFCgMKBQoFCgUIBwoFCAcICQgJBgkICQYLCAsECwYLBA0GDwINBA8CDwQRAhECEQITABUCFQAVAH0AEQETAREBEQETAxEDEQURBREFDwcRBw8JDwkNCQ8LDQsNDQsNCw0LDwsPCREJEQcRBxMFFQUVBRUDFwEXARkAGQAZAhkCFwQVBBUEEwYTCBEIEQgRCg0MDwoNDA0OCw4LDgkQCRAHEAkQBRAFEgUSAxIDFAMSAxYBFAEWARYAFqQCAAALAgkCCQQHAgcGBwYHBgUIBQYDCAMIAwYDCAEIAQgACAAIAAgCCAIIAgYCCAQIBAgGBgYEBgQIBAoCCgAKAAwAvAEABgEIAAYBBgMGAwQDBgMEBQQDBAUCBQQFAgUABwIFAJkBAACmAaIB3ALbAgAREQDmAhIRggYA",
+  "5":"BgABAaAB0APgBxIAFAESABIBEgMSARADEgMQAxIFEAcOBRAHDgkOCQ4JDgsMCwwLCgsKDQoPCA0IDwgPBhEEEwYTAhMEFwIXABcAiQIAEwETABEBEQMTAxEDDwMRBQ8FDwUPBw8JDQcNCQ0LDQsLCwsNCw0JDwkPCREHEQcTBxMFEwMVAxcDGQEZARkAFwAVAhUCFQQTBBMGEwYRCBEIDwoPCg8KDQwNDA0MCw4LDgkOCRAJEAcOBxAHEgUQBRIDEAMSAxIBEgEUARIAFLgCAAAFAgUABQIFBAUCBQQDBAUEAwYDBgMIAwgBCAEIAQoACAAIAgYACAQGAgQEBgQEBAQGBAQCBgIGAgYCBgIIAAYA4AEABgEIAAYBBgMGAQQDBgMEAwQFBAMCBQQFAgUABwIFAPkBAG+OAQCCBRESAgAAAuYFABMRAK8CjQMAAJ8BNgA=",
+  "7":"BgABAQrQBsILhQOvCxQR7wIAEhK+AvYIiwMAAKgCERKwBgA=",
+  "6":"BgABAsYBnAOqBxgGFgYYBBYEFgIWABQBFgEUAxQDFAUUBRIFEAcSCRAJEAkOCw4NDgsMDQoPCg8KDwgRCBEGEQYRBBMCEwITAhUAkwIBAAERAREBEQEPAxEFEQMPBREFDwcPBw8HDwkNCQ0LDQsNCwsNCw0LDQkPCQ8JDwcRBxEHEwUTAxMFFQEXAxcBGQAVABUCEwIVBBMEEQYTBhEIEQgPChEKDQoPDA0MDQwNDgsOCxALDgkQCRAHEgcQBxIFEgUSBRIBFAMSARIBFAASAOIFABACEgIQAhIEEAQQBhIGEAYQCBAKEAgOChAMDgwMDA4ODA4MDgwODBAKEAoQChIIEggSBhQGFgYUAhYCGAIYABoAGAEYARYBFgMUBRQFEgUSBxAHEAcQCQ4LDgkMCwwNDA0KDQgPCg0GEQgPBhEEEQQRBBMEEwITAhMCFQIVABWrAgAACgEIAQoBCAEGAwYDBgUGBQQFBAUEBQQFAgUABwIFAAUABwEFAAUBBQMFAwUDBQMFBQMFAwUBBQEHAQkBBwAJAJcBDUbpBDASFi4A4AETLC8SBQAvERUrAN8BFC0yEQQA",
+  "8":"BgABA9gB6gPYCxYAFAEUARYBEgMUBRQFEgUSBxIHEAcSCQ4JEAkOCw4LDgsMDQwNCg0KDQoPCg8IDwgPBhEGEQQPBBMCEQIRABMAQwAxAA8BEQEPAREDDwMRAw8FEQUPBxEJDwkPCQ8NDw0PDQ8IBwYHCAcGBwgHBgkGBwYJBgcECQYJBAkGCQQJBAsECwQLBA0CCwINAg8CDwIPAA8AaQATAREBEwERAxEFEQURBREHEQcPBw8JDwkPCw8LDQsNDQ0LCw0LDwsNCQ8JDwcPBw8HEQURAxEFEQMRARMBEwFDABEAEwIRAhEEEQQRBg8GEQgPCA8KDwoPCg0MDQwNDAsOCw4LDgkQCRAJDgkQBxIHEAcSBRADEgMUAxIBFAEUABQAagAOAhAADgIOAg4EDAIOBAwEDAQMBgwECgYMBAoGCAYKBgoGCggKBgoICgYICAoICA0MCwwLDgsOCRAHEAcQBxIFEgUSAxIDEgMSARABEgASADIARAASAhICEgQSAhIGEAYSBhAIEAgQCBAKDgoODA4MDgwMDgwODA4KEAwQCBIKEggSCBQIFAYUBBQEFgQWAhYCGAANT78EFis0EwYANBIYLgC0ARcsMRQFADERGS0AswELogHtAhcuNxA3DRkvALMBGjE6ETYSGDIAtAE=",
+  "9":"BgABAsYBpASeBBcFFQUXAxUDFQEVABMCFQITBBMEEwYRBhMGDwgRCg8KDwoNDA0OCwwNDgkQCRAJEAcSBxIFEgUSAxQBFAEUARYAlAICAAISAhICEgQSAhAGEgQQBhIGEAgSCA4IEAoOChAMDAwODAwODA4MEAoOChAKEAgSCBIIFAYUBBQGFgIYBBgCGgAWABYBFAEWAxQDEgUUBRIHEgcQCRIJEAkOCw4LDgsODQwNDA0MDwoPCg8IDwgRCBEGEQYRBhEEEQITAhECEwARAOEFAA8BEQEPAREDDwMPBREFDwUPBw8JDwcNCQ8LDQsLCw0NCw0LDQsNCw8JEQkPCREHEQcTBRMFEwUTARUBFQEXABkAFwIXAhcCFQQTBhMGEQYRCA8IDwgNCg8MCwoLDAsOCQ4JDgkQBxAHEAUQBRIFEgMSAxQDFAEUAxQAFgEWABamAgAACwIJAgkCCQIHBAcEBwYFBgUGAwYDBgMGAQgBBgEIAAgABgIIAgYCBgQGBAYEBgYGBgQIBAgECAIKAgoCCgAMAJgBDUXqBC8RFS0A3wEUKzARBgAwEhYsAOABEy4xEgMA",
+  ":":"BgACAWE0rAEADgIOAg4CDgQMBAoGDAYKBgoICAgKCAgIBgoGCgYKBgoEDAQKBAwECgIMAAwCDAAMAAwBCgAMAQoDDAMKAwoDCgUKBQgFCgUIBwgJBgcICQYJBgsGCQQLAg0CDQINAA0ADQENAQ0BCwMNAwkFCwUJBQkHBwcJBwUHBwkFCQUJBQkDCwMJAwsDCQELAAsBCwALAAsCCQALAgkECwQJBAkECQYJBgcGBwgJBgcKBQgHCgUKBQwFCgEOAwwBDgEOAA4BYQDqBAAOAg4CDgIOBAwECgYMBgoGCggICAoICAgGCgYKBgoGCgQMBAoEDAQKAgwADAIMAAwADAEKAAwBCgMMAwoDCgMKBQoFCAUKBQgHCAkGBwgJBgkGCwYJBAsCDQINAg0ADQANAQ0BDQELAw0DCQULBQkFCQcHBwkHBQcHCQUJBQkFCQMLAwkDCwEJAwsACwELAAsACwIJAAsECQILBAkECQQJBgkGBwYHCAkGBwoFCAcKBQoFDAUKAQ4DDAEOAQ4ADg==",
+  "x":"BgABARHmAoAJMIMBNLUBNrYBMIQB1AIA9QG/BI4CvwTVAgA5hgFBwAFFxwE1fdUCAI4CwATzAcAE1AIA",
+  ";":"BgACAWEslgYADgIOAg4CDgQMBAoGDAYKBgoICAgKCAgIBgoGCgYKBgoEDAQKBAwECgIMAAwCDAAMAAwBCgAMAQoDDAMKAwoDCgUKBQgFCgUIBwgJBgcICQYJBgsGCQQLAg0CDQINAA0ADQENAQ0BCwMNAwkFCwUJBQkHBwcJBwUHBwkFCQUJBQkDCwMJAwsBCQMLAAsBCwALAAsCCQALBAkCCwQJBAkECQYJBgcGBwgJBgcKBQgHCgUKBQwFCgEOAwwBDgEOAA4BYwjxBAAOAg4CDAIOBAwECgYMBgoGCggICAgICAgICgYKBgoECgQMBAoECgIMAgoCDAIKAAoADAAKAQwBCgEKAwwDCgMKBQoFCAUKBQgHBgkIBwYJBgkECwYJBAsCDQILAg0CDQADAAEAAwADAAMBAwADAAMAAwEFAAUBBwEHAQcDBwEJAwkBCwMLAwsDDQUNAw0FDwUPBREHEwUTCRMHFwkXCRezAQAgyAEJBgkGCQYHBgkIBwgFCAcKBQoFCgUMAQwDDAEOAQ4AEA==",
+  "=":"BgACAQUawAUA5gHEBAAA5QHDBAABBQC5AgDsAcQEAADrAcMEAA==",
+  "B":"BgABA2e2BMQLFgAUARQBFAEUAxIDEgUSBRIFEAcQBxAJDgkOCQ4LDgsMCwwNDA0KDQgNCg0IDwYPBg8GDwQRBBEEEQIRAhMAEwAHAAkABwEHAAkBCQAHAQkBCQEHAQkBCQMJAwcDCQMJAwkFBwUJAwkHCQUHBQkHCQcJBwcHBwkHBwcJBwsHCQUQBQ4FDgcOCQ4JDAkMCwoNCg0IDwgRBhMEFQQXAhcCGwDJAQEvAysFJwklDSMPHREbFRkXFRsTHw8fCyUJJwcrAy0B6wMAEhIAoAsREuYDAAiRAYEElgEAKioSSA1EOR6JAQAA0wEJkAGPBSwSEiwAzAETKikSjwEAAMUCkAEA",
+  "A":"BgABAg/KBfIBqQIAN98BEhHzAgAWEuwCngsREvwCABMR8gKdCxIR8QIAFBI54AEFlwGCBk3TA6ABAE3UAwMA",
+  "?":"BgACAe4BsgaYCAAZABkBFwEXBRUDEwUTBxEHEQcPCQ8JDQkNCQ0LCwsLCwsLCQsJCwcNBwsHDQcLBQsFDQULAwkFCwMLAwkDCQMBAAABAQABAAEBAQABAAEAAQABAAABAQAAAQEAEwcBAQABAAMBAwADAAUABQAFAAcABwAFAAcABwAFAgcABQAHAAUAW7cCAABcABgBFgAUAhQAFAISAhACEAIQBA4EDgQMBgwGDAYMBgoICgYKCAgKCggICAgKBgoICgYMCAwGDAgOBg4GEAYQBgIAAgIEAAICBAACAgQCBAIKBAoGCAQKBggIBgYICAYIBggGCgQIBAoECAQKAggCCgIKAAgACgAKAAgBCAEKAwgDCAMIAwgFBgMIBQYHBAUGBQQFBAcCBQQHAgcCCQIHAgkCBwAJAgkACQAJAAkBCQAJAQsACQELAQsDCwELAwsDCwMLAwsDCwULAwsFCwMLBV2YAgYECAQKBAwGDAQMBhAIEAYSBhIIEgYUBhIEFgYUBBYEFgQWAhgCFgIYABYAGAAYARgBGAMWBRYHFgcWCRYLFA0IBQYDCAUIBwYFCAcGBwgHBgcICQYJCAkGCQYJCAsGCwYLBgsGDQYNBA0GDQQNBA8EDwQPAg8EEQIRAhEAEQITAWGpBesGAA4CDgIOAg4EDAQKBgwGCgYKCAgICggICAYKBgoGCgYKBAwECgQMBAoCDAAMAgwADAAMAQoADAEKAwwDCgMKAwoFCgUIBQoFCAcICQYHCAkGCQYLBgkECwINAg0CDQANAA0BDQENAQsDDQMJBQsFCQUJBwcHCQcFBwcJBQkFCQUJAwsDCQMLAwkBCwALAQsACwALAgkACwIJBAsECQQJBAkGCQYHBgcICQYHCgUIBwoFCgUMBQoBDgMMAQ4BDgAO",
+  "C":"BgABAWmmA4ADAAUCBQAFAgUEBQIDBAUEAwQDBgMEAQYDBgEGAAgBBgDWAgAAwQLVAgATABMCEQITBBEEEQQRBhEIEQgPCA8KDwoNCg0MDQwNDAsOCw4LDgkOCxAHEAkQBxIHEgUSBRIDEgEUARIBFAAUAMIFABQCFAISBBQEEgQSBhIIEggSCBAKEAoQCg4MDgwODA4ODA4MDgwQDA4KEggQChIIEggSBhIGFAQSAhQCEgIUAMYCAADBAsUCAAUABwEFAAUBBQMDAQUDAwMDAwMFAQMDBQEFAAUBBwAFAMEF",
+  "L":"BgABAQmcBhISEdkFABIQALQLwgIAAIEJ9AIAAK8C",
+  "D":"BgABAkeyBMQLFAAUARIBFAESAxIDEgMSBRIFEAcQBxAHDgkOCQ4LDgsMCwwNDA0KDwoPCg8IDwgRCBEGEwQTBBMEEwIVAhUAFwDBBQAXARcBFwMTAxUDEwUTBxEHEQcPCQ8JDwkNCw0LCwsLDQsNCQ0JDQcPBw8HDwcRBREFEQMRAxEDEwERARMBEwDfAwASEgCgCxES4AMACT6BAxEuKxKLAQAAvwaMAQAsEhIsAMIF",
+  "F":"BgABARGABoIJ2QIAAIECsgIAEhIA4QIRErECAACvBBIR5QIAEhIAsgucBQASEgDlAhES",
+  "E":"BgABARRkxAuWBQAQEgDlAhES0QIAAP0BtgIAEhIA5wIRFLUCAAD/AfACABISAOUCERLDBQASEgCyCw==",
+  "G":"BgABAZsBjgeIAgMNBQ8FDQUNBQ0HCwcNBwsHCwkLCQsJCwsJCwsLCQsJDQkLBw0HDwcNBw8FDwUPAw8DEQMPAxEBEQERARMBEQAXABUCFwIVAhMEFQQTBhMGEwYRCBEIDwoRCg8KDwwNDA0MDQ4LDgkQCRAJEAcQBxIFEgUUBRQDFAMUARYBFgEYAMoFABQCFAASBBQCEgQSBBIEEgYSBhAGEAgQCBAKDgoOCg4MDgwMDgwOChAKEAoSCBIIFAgUBhQEGAYWAhgEGAIaAOoCAAC3AukCAAcABwEFAQUBBQMFAwMFAwUDBQEFAQcBBQEFAQUABwAFAMUFAAUCBwIFAgUCBQQFBAMGBQYDBgUGAwgDBgMIAQgDCAEIAQoBCAEIAAgACgAIAAgCCAIIAggECgQGBAgECAYIBgC6AnEAAJwCmAMAAJcF",
+  "H":"BgABARbSB7ILAQAAnwsSEeUCABISAOAE5QEAAN8EEhHlAgASEgCiCxEQ5gIAEREA/QPmAQAAgAQPEOYCABER",
+  "I":"BgABAQmuA7ILAJ8LFBHtAgAUEgCgCxMS7gIAExE=",
+  "J":"BgABAWuqB7ILALEIABEBEwERAREDEwMRAxEFEQURBw8HEQcPCQ0LDwsNCw0NDQ0LDwsPCxEJEQkTCRMJFQcVBxcFFwMZAxsBGwEbAB8AHQIbAhsEGQYXBhcGFQgTCBMKEwoRDA8KDwwNDA0OCw4LDgkQCRAJEAcQBRIFEgUSAxQDEgESARIBFAESABIAgAEREtoCABERAn8ACQIHBAcEBwYHBgUIBQoDCgMKAwoDDAEKAQwBCgEMAAwACgAMAgoCDAIKBAoECgYKBggGBgYGCAQGBAgCCgAIALIIERLmAgAREQ==",
+  "M":"BgACAQRm1gsUABMAAAABE5wIAQDBCxIR5QIAEhIA6gIK5gLVAe0B1wHuAQztAgDhAhIR5QIAEhIAxAsUAPoDtwT4A7YEFgA=",
+  "K":"BgABAVXMCRoLBQsDCQMLAwsDCwMLAwsBCwELAQsBCwELAQ0ACwELAAsADQALAg0ACwILAA0CCwILAgsCDQQLBAsECwYNBAsGCwYLCAsGCwgJCgsICQoJCgkMCQwJDAkOCRALEAkQCRKZAdICUQAAiwQSEecCABQSAKALExLoAgAREQC3BEIA+AG4BAEAERKCAwAREdkCzQXGAYUDCA0KDQgJCgkMBwoFDAUMAQwBDgAMAg4CDAQOBAwGDghmlQI=",
+  "O":"BgABAoMBsATaCxwAHAEaARoDGgMYBRYFFgcWBxQJEgkSCRILEAsODQ4NDg0MDwoNDA8KDwgPCBEIDwYRBg8GEQQRAhMCEQITABMA0QUAEQETAREBEQMTBREFEQURBxEHDwcRCQ8LDQsPCw0NDQ0NDwsPCw8LEQkTCRMJEwkVBxUHFwUXAxkDGQEbARsAGwAZAhkCGQQXBhcGFQYVCBUIEwoRChEMEQoRDA8MDQ4NDg0OCxAJEAsQCRAHEgcSBxIFFAMSAxIDEgEUARIAEgDSBQASAhQCEgISBBIEEgYSBhIIEggQCBAKEgwODBAMEA4ODg4QDhIMEAwSChQKFAgUCBYIFgYYBBoGGgQcAh4CHgILggGLAylCWxZbFSlBANEFKklcGVwYKkwA0gU=",
+  "N":"BgABAQ+YA/oEAOUEEhHVAgASEgC+CxQAwATnBQDIBRMS2AIAExEAzQsRAL8ElgU=",
+  "P":"BgABAkqoB5AGABcBFQEVAxMDEwMTBREHEQcRBw8JDwkNCQ0LDQsNCwsNCw0JDQkNCQ8HDwcPBxEFEQURAxEDEQMTAREBEwETAH8AAIMDEhHlAgASEgCgCxES1AMAFAAUARIAFAESAxIDEgMSAxIFEAUQBRAHDgkOCQ4JDgsMCwwNDA0KDQoNCg8IDwgRCBEGEwQTBBUEFQIXAhkAGQCzAgnBAsoCESwrEn8AANUDgAEALBISLgDYAg==",
+  "R":"BgABAj9msgsREvYDABQAFAESARQBEgESAxIDEgUSBRAFEAcQBw4JDgkOCQ4LDAsMDQwLCg0KDwoNCA8IDwgPBhEEEwYTAhMEFQIXABcAowIAEwEVARMDEwMTBRMFEQcTBxELEQsRDQ8PDREPEQ0VC8QB/QMSEfkCABQSiQGyA3EAALEDFBHnAgASEgCgCwnCAscFogEALhISLACqAhEsLRKhAQAApQM=",
+  "Q":"BgABA4YBvAniAbkB8wGZAYABBQUFAwUFBQUHBQUDBwUFBQcFBQMHBQcDBwUJAwcDCQMJAwkDCQMJAQsDCwMLAQsDCwENAw0BDQEPAA8BDwAPABsAGwIZAhcEGQQXBBUGFQgVCBMIEQoTChEKDwwPDA8ODQ4NDgsQCxAJEAkQBxIHEgUSBRQFFAMUARQDFAEWABYAxgUAEgIUAhICEgQSBBIGEgYSCBIIEAgQChIMDgwQDBAODg4OEA4SDBAMEgoUChQIFAgWCBYGGAQaBhoEHAIeAh4CHAAcARoBGgMaAxgFFgUWBxYHFAkSCRIJEgsQCw4NDg0ODQwPCg0MDwoPCA8IEQgPBhEGDwYRBBECEwIRAhMAEwC7BdgBrwEImQSyAwC6AylAWxZbFSk/AP0BjAK7AQeLAoMCGEc4J0wHVBbvAaYBAEM=",
+  "S":"BgABAYMC8gOEBxIFEgUQBxIFEgcSBxIJEgcSCRIJEAkQCRALEAsOCw4NDg0MDQ4PDA0KEQoPChEKEQgRCBMGFQQTBBcCFQAXABkBEwARAREBEQMPAQ8DDwMPAw0DDQUNAw0FCwULBwsFCwUJBwsFCQcHBQkHCQUHBwcHBwUHBwUFBQcHBwUHAwcFEQsRCxMJEwkTBxMFEwUVBRUDFQMVARMBFwEVABUAFQIVAhUCFQQVBBUEEwYVBhMIEwgTCBMIEwgRCBMKEQgRCmK6AgwFDgUMAw4FEAUOBRAFEAUQBRAFEAMSAw4DEAMQAxABEAEOAQ4AEAIMAg4CDgQMBAwGCggKCAoKBgwGDgYQBBACCgAMAAoBCAMKBQgFCAcIBwgJCAsGCQgLCA0IDQgNCA8IDQgPCA8IDwgPChEIDwgPCBEKDwoPDBEMDwwPDg8ODw4NEA0QCxALEgsSCRIHEgcUBRQFGAUYAxgBGgEcAR4CJAYkBiAIIAweDBwQHBAYEhgUFBYUFhQWEBoQGg4aDBwKHAoeBh4GIAQgAiACIgEiASIFIgUiBSAJIgkgCyINZ58CBwQJAgkECwQLAgsECwINBA0CDQQNAg0CDQALAg0ADQANAAsBCwELAQsDCwULBQkFCQcHBwcJBwkFCwMLAw0BDQENAAsCCwQLBAkGCQgJCAkKBwoJCgcMBQoHDAcMBQwF",
+  "V":"BgABARG2BM4DXrYEbKwDERL0AgAVEesCnQsSEfsCABQS8QKeCxES8gIAExFuqwNgtQQEAA==",
+  "T":"BgABAQskxAv0BgAAtQKVAgAA+wgSEeUCABISAPwImwIAALYC",
+  "U":"BgABAW76B7ALAKMIABcBFwMXARUFFQUTBxMHEwkRCREJEQsPDQ0LDw0NDwsPCw8LEQkPCRMJEQcTBxMFEwUVBRUDEwMXARUBFQEXABUAEwIVAhMCFQQTBBUEEwYTBhMIEwgRChEIEQwRDA8MDw4PDg0OCxANEAsSCRIJEgcUBxQHFAMWBRYBGAEYARgApggBAREU9AIAExMAAgClCAALAgkECQQHBAcIBwgHCAUKBQoDCgMKAwwBCgEMAQwADAAMAgoCDAIKAgoECgQKBggGCAYICAYKBAgCCgIMAgwApggAARMU9AIAExM=",
+  "X":"BgABARmsCBISEYkDABQSS54BWYICXYkCRZUBEhGJAwAUEtYCzgXVAtIFExKIAwATEVClAVj3AVb0AVKqAREShgMAERHXAtEF2ALNBQ==",
+  "W":"BgABARuODcQLERHpAp8LFBHlAgASEnW8A2+7AxIR6wIAFBKNA6ALERKSAwATEdQB7wZigARZ8AIREugCAA8RaKsDYsMDXsoDaqYDExLqAgA=",
+  "Y":"BgABARK4BcQLhgMAERHnAvMGAKsEEhHnAgAUEgCsBOkC9AYREoYDABERWOEBUJsCUqICVtwBERI=",
+  "Z":"BgABAQmAB8QLnwOBCaADAADBAusGAMgDggmhAwAAwgLGBgA=",
+  "`":"BgABAQfqAd4JkQHmAQAOlgJCiAGpAgALiwIA",
+  "c":"BgABAW3UA84GBQAFAQUABQEFAwMBBQMDAwMDAwUBAwMFAQUABQEHAAUAnQMABQIFAAUCBQQFAgMEBQQDBAMGAwQBBgMGAQYABgEGAPABABoMAMsCGw7tAQATABMCEwARAhMEEQIPBBEEDwQPBg8IDwYNCA0KDQoNCgsMCwwLDAkOCRAHDgcQBxIFEgUUBRQDFAEWAxgBGAAYAKQDABQCFAISBBQCEgYSBhAGEggQCBAIEAoQCg4MDAwODAwODAwKDgwQCg4IEAgQCBAIEAYSBhIGEgQSAhQCFAIUAOABABwOAM0CGQzbAQA=",
+  "a":"BgABApoB8AYCxwF+BwkHCQcJCQkHBwkHBwcJBQkFBwUJBQkFCQMHBQkDCQMJAwcDCQEHAQkBBwEJAQcABwAHAQcABQAHAAUBBQAFABMAEwITAhEEEwQPBBEGDwgPCA0IDwoLCg0KCwwLDAsMCQ4JDgkOBw4HEAcQBRAFEAUSAxADEgESAxIBFAESABQAFAISAhQCEgQSBBIEEgYSBhIIEAgQChAIDgwODA4MDg4MDgwODBAMEAoSCBIKEggUCBQGFgYWBBgEGAIaAhoAcgAADgEMAQoBCgEIAwgDBgUEBQQFBAcCBwIHAgkCCQAJAKsCABcPAMwCHAvCAgAUABYBEgAUARIDFAMQAxIDEAUSBQ4FEAcOCRAJDAkOCwwLDA0MCwoNCg8IDwgPCA8GEQYRBhMEEwIXAhUCFwAZAIMGFwAKmQLqA38ATxchQwgnGiMwD1AMUDYAdg==",
+  "b":"BgABAkqmBIIJGAAYARYBFgEUAxQDEgUSBRIFEAcQCQ4HDgkOCw4LDAsMDQoNCg0KDQgPBg8GDwYRBBEEEQQTBBECEwIVAhMAFQD/AgAZARcBFwEXAxUDEwUTBREFEQcPBw8JDwkNCQ0LDQsLCwsNCQ0JDQcPBw8HDwURAxEDEQMTAxMBEwMVARUAFQHPAwAUEgCWCxEY5gIAERkAowKCAQAJOvECESwrEn8AAJsEgAEALBISLgCeAw==",
+  "d":"BgABAkryBgDLAXAREQ8NEQ0PDREJDwkRBw8FDwURAw8DDwERAw8BEQEPACMCHwQfCB0MGw4bEhcUFxgVGhEeDSANJAkmBSgDKgEuAIADABYCFAIUAhQCFAQUBBIGEgYSBhAIEAgQCBAKDgoODAwMDAwMDgoOCg4KEAgQCBIGEgYSBhQEFgQWBBYCGAIYAHwAAKQCERrmAgARFwCnCxcADOsCugJGMgDmA3sAKxERLQCfAwolHBUmBSQKBAA=",
+  "e":"BgABAqMBigP+AgAJAgkCCQQHBAcGBwYFCAUIBQgDCgMIAQoDCAEKAQoACgAKAAoCCAIKAggECgQIBAgGCAYGBgQIBAoECAIKAAyiAgAAGQEXARcBFwMVBRMFEwURBxEHDwcPCQ8LDQkNCwsNCw0LDQkNBw8JDwcPBQ8FEQURAxEDEwMTAxMBFQAVARcALwIrBCkIJwwlDiESHxQbGBkaFR4TIA0iCyQJKAMqASwAggMAFAIUABIEFAISBBIEEgQSBhIGEAgQCBAIEAoODA4MDgwODgwQDBAKEAoSChIIFAgUCBYGGAQYBhoCGgQcAh4ALgEqAygFJgkkDSANHhEaFRgXFBsSHQ4fDCUIJwQpAi0AGQEXAxcDFQcTBRMJEQkPCw8LDQ0PDQsNDQ8LEQsRCxEJEwkTCRMJEwcTBxUHFQUVBRUHFQUVBRUHFwcVBRUHCs4BkAMfOEUURxEfMwBvbBhAGBwaBiA=",
+  "h":"BgABAUHYBJAGAAYBBgAGAQYDBgEEAwYDBAMEBQQDAgUEBQIFAAUCBQB1AAC5BhIT5wIAFhQAlAsRGOYCABEZAKMCeAAYABgBFgEWARQDFAMSBRIFEgUQBxAJDgcOCQ4LDgsMCwwNCg0KDQoNCA8GDwYPBhEEEQQRBBMEEQITAhUCEwAVAO0FFhPnAgAUEgD+BQ==",
+  "g":"BgABArkBkAeACQCNCw8ZERkRFxEVExMVERUPFQ8XDRcLGQkZBxsFGwUdAR0BDQALAA0ADQINAAsCDQANAg0CDQILAg0EDQINBA0GDQQNBg0EDQYNCA0GDwgNCA0IDQgPCg0KDwwNDA8MDw4PDqIB7gEQDRALEAkQCQ4JEAcOBw4FDgUOAwwFDgMMAQwBDAEMAQwACgEKAAoACAIIAAgCCAIGAggCBgIGBAYCBgQEAgYEAqIBAQADAAEBAwADAAMABQADAAUAAwAFAAMABQAFAAMABQA3ABMAEwIRAhMCEQQRBBEEEQYRBg8IDwgPCA0KDQoNCg0MCwwLDgsOCQ4JDgkQBxAHEgcSBRIDFAMWAxQBFgEYABgA/gIAFgIWAhQEFgQUBBIGFAgSCBIIEAoSChAKDgwODA4MDg4MDgwODA4KEAgQCBAIEgYSBhIEEgYSBBQCEgIUAhQCOgAQABABDgEQAQ4BEAMOAw4FDgUOBQwFDgcMBQ4HDAkMB4oBUBgACbsCzQYAnAR/AC0RES0AnQMSKy4RgAEA",
+  "f":"BgABAUH8A6QJBwAHAAUABwEFAQcBBQEFAwUDBQMDAwMDAwUDAwMFAQUAwQHCAQAWEgDZAhUUwQEAAOMEFhftAgAWFADKCQoSChIKEAoQCg4KDgwOCgwMDAoKDAwMCgwIDAgMCAwIDAYOCAwEDgYMBA4GDAIOBA4CDgQOAg4CDgAOAg4ADgC2AQAcDgDRAhkQowEA",
+  "i":"BgACAQlQABISALoIERLqAgAREQC5CBIR6QIAAWELyAoADgIOAgwEDgIKBgwGCgYKCAoGCAgICggIBggGCgYKBAoECgQMBAoCDAIMAgwCDAAMAAwADAEMAQoBDAMKAwoDCgUKBQgFCgUIBwgHCAcICQgJBgkECwQJBA0CCwANAA0ADQELAQ0BCwMJBQsFCQUJBwkFBwcHBwcJBQcFCQUJBQkDCQMLAwkBCwELAQsACwALAAsCCwILAgkCCwIJBAkECQQJBgcGCQYHCAcIBwgHCgUKBQwFCgMMAQwBDgEMAA4=",
+  "j":"BgACAWFKyAoADgIOAgwEDgIKBgwGCgYKCAoGCAgICggIBggGCgYKBAoECgQMBAoCDAIMAgwCDAAMAAwADAEMAQoBDAMKAwoDCgUKBQgFCgUIBwgHCAcICQgJBgkECwQJBA0CCwANAA0ADQELAQ0BCwMJBQsFCQUJBwkFBwcHBwcJBQcFCQUJBQkDCQMLAwkBCwELAQsACwALAAsCCwILAgkCCwIJBAkECQQJBgcGCQYHCAcIBwgHCgUKBQwFCgMMAQwBDgEMAA4BO+YCnwwJEQkRCQ8JDwsNCQ0LDQkLCwsJCQsLCQkLBwsHCwcLBwsFCwcNAwsFDQMLBQ0BDQMNAQ0DDQENAQ0ADQENAA0AVwAbDQDSAhoPQgAIAAgABgAIAgYCCAIGAgYEBgQGBAQEBAQEBgQEBAYCBgC4CRES6gIAEREAowo=",
+  "k":"BgABARKoA/QFIAC0AYoD5gIAjwK5BJICwwTfAgDDAbIDFwAAnwMSEeUCABISAJILERLmAgAREQCvBQ==",
+  "n":"BgABAW1yggmQAU8GBAgEBgQGBgYCCAQGBAYEBgQIAgYECAQGAggEBgIIBAgCCAQIAggCCAIIAgoACAIKAAgCCgAKAgoADAAKAgwAFgAWARQAFAEUAxQDFAMSAxIFEgUQBRIHEAkOBxAJDgsOCwwLDA0MDQoPCA8IEQgRBhEGEwYVBBUEFQIXAhkCGQDtBRQR5QIAFBAA/AUACAEIAQYBCAMGBQQFBgUEBwQFBAcCBwIHAgcCCQIHAAcACQAHAQcABwMHAQUDBwMFAwUFBQUDBQEFAwcBBwAHAPkFEhHjAgASEgDwCBAA",
+  "m":"BgABAZoBfoIJigFbDAwMCg4KDggOCA4IDgYQBhAGEAQQBBAEEAISAhACEgAmASQDJAciCyANHhEcFRwXDg4QDBAKEAwQCBAKEggSBhIGEgYSBBQEEgIUAhICFAAUABQBEgEUARIDEgMSAxIFEgUQBxAHEAcQBw4JDgkOCw4LDAsMDQoNCg8KDwgPCBEIEQYRBBMEEwQTAhMCFQAVAP0FEhHlAgASEgCCBgAIAQgBBgEGAwYFBgUEBQQHBAUEBwIHAgcCBwIJAAcABwAJAAcBBwEHAQUBBwMFAwUDBQMDBQMFAwUBBQEHAQcAgQYSEeUCABISAIIGAAgBCAEGAQYDBgUGBQQFBAcEBQQHAgcCBwIHAgkABwAHAAkABwEHAQcBBQEHAwUDBQMFAwMFAwUDBQEFAQcBBwCBBhIR5QIAEhIA8AgYAA==",
+  "l":"BgABAQnAAwDrAgASFgDWCxEa6gIAERkA0wsUFw==",
+  "y":"BgABAZ8BogeNAg8ZERkRFxEVExMVERUPFQ8XDRcLGQkZBxsFGwUdAR0BDQALAA0ADQINAAsCDQANAg0CDQILAg0EDQINBA0GDQQNBg0EDQYNCA0GDwgNCA0IDQgPCg0KDwwNDA8MDw4PDqIB7gEQDRALEAkQCQ4JEAcOBw4FDgUOAwwFDgMMAQwBDAEMAQwACgEKAAoACAIIAAgCCAIGAggCBgIGBAYCBgQEAgYEAqIBAQADAAEBAwADAAMABQADAAUAAwAFAAMABQAFAAMABQA3ABMAEwIRABECEwQRAg8EEQQPBBEGDwgNCA8IDQgNCg0MDQwLDAkOCw4JDgcQBxAHEgUSBRQFFAMWARgDGAEaABwA9AUTEuQCABEPAP8FAAUCBQAFAgUEBQIDBAUEAwQDBgMEAQYDBgEGAAgBBgCAAQAAvAYREuICABMPAP0K",
+  "q":"BgABAmj0A4YJFgAWARQAEgESAxADEAMOAw4FDgUMBQ4HDgcOBwwJDgmeAU4A2QwWGesCABYaAN4DAwADAAMBAwADAAUAAwADAAMABQAFAAUABwAHAQcACQAVABUCFQATAhUCEwQRAhMEEQQRBhEGDwgPCA8IDQoNDA0MCwwLDgkOCRAJEAkQBxIHEgUUBRYDFgMYARoBGgAcAP4CABYCFgIWBBYEFAQSBhQIEggSCBAKEgoQDA4MDgwODg4ODBAMDgwQChIIEAoSCBIGEgYUBhQEFAQWAhYCFgIWAApbkQYSKy4ReAAAjARTEjkRHykJMwDvAg==",
+  "p":"BgABAmiCBIYJFgAWARYBFAEWAxQDEgUUBRIFEgcSBxAJEAkQCQ4LDgsOCwwNDA0KDwoPCg8IEQgRCBEGEwQTBhMCFQQVAhUAFQD9AgAbARkBFwMXAxcDEwUTBxMHEQcRCQ8JDQsNCw0LCw0LDQkPCQ0JDwURBxEFEQURAxMDEQMTARUBEwEVARUBFQAJAAcABwAFAAcABQAFAAMAAwADAAUAAwIDAAMAAwIDAADdAxYZ6wIAFhoA2gyeAU0OCgwIDgoMCA4GDgYMBg4GDgQQBBAEEgQUAhQCFgIWAApcoQMJNB8qNxJVEQCLBHgALhISLADwAg==",
+  "o":"BgABAoMB8gOICRYAFgEWARQBFgMUAxIDFAUSBRIHEgcQBxAJEAkOCw4LDgsMDQwNCg8KDwoPCg8IEQgRBhMGEwQTBBMCFQIVABcAiwMAFwEVARUDEwMTAxMFEwcRBxEHDwkPCQ8LDQsNCw0NCw0LDwkNCw8HEQkPBxEHEQcRBRMFEwMTAxUDFQEVABUAFQAVAhUCFQITBBMEEwYTBhEGEQgRCA8KDwoPCg0KDQwNDAsOCw4JDgkQCRAJEgcSBxIFFAUUAxQDFgEWARYAFgCMAwAYAhYCFgQUBBQEFAYUCBIIEggQChAKEAwODA4MDg4MDgwQCg4KEgoQChIIEggSBhQGEgYUBBYEFAIWAhYCFgALYv0CHTZBFEMRHTcAjwMcNUITQhIiOACQAw==",
+  "r":"BgACAQRigAkQAA8AAAABShAAhAFXDAwODAwKDgoOCBAIDgYQBhAEEAQQBBAEEAISABACEAAQAA4BEAAQARADEAEQAxADEAUSBRIHFAcUCxQLFA0WDVJFsQHzAQsMDQwLCgkICwgLCAkGCQYJBAkGBwIJBAcCBwQHAAcCBwAFAgcABQAHAQUABQEFAQUBBQEDAQUBAwMDAQMDAwEAmwYSEeMCABISAO4IEAA=",
+  "u":"BgABAV2KBwGPAVANCQsHDQcNBw0FCwUNBQ0FDQMPAw8DEQMTARMBFQEVABUAFQITABMEEwITBBMEEQQRBhEGDwYRCA8KDQgPCg0MDQwLDAsOCRALDgcQBxIHEgUUBRQFFAMWAxgBGAEYARoA7gUTEuYCABMPAPsFAAcCBwIFBAcCBQYDBgUGAwgDBgMIAQgBCAEIAQoBCAAIAAoACAIIAggCCAIGBAgEBgQGBgYGBAYCBgQIAggACAD6BRES5AIAEREA7wgPAA==",
+  "s":"BgABAasC/gLwBQoDCgMMBQ4DDgUOBRAFEAUSBRAHEgcQCRIJEAkSCxALEAsQDRANDg0ODw4PDA8MDwoRChEIEwYTBBcCFQIXABkBGQEXAxcFFQUTBRMHEwcRCREJDwkNCQ8LDQ0LCwsNCw0JDQkPBw8HDwUPBREDEQMRAREDEQETABEBEwARABMADwIRABECEQIRBBMCEwQVBBUEFQYVBhMIFwgVChUKFQxgsAIIAwYDCAMKAQgDCAMKAQoDCgEKAwoBCgMKAQwDCgEKAwoBDAMKAQoBCgEMAQoACgEKAAoBCgAKAQgACgAIAQgABgoECAIKAgoCCgAMAQoBDAUEBwIHBAcEBwIHBAkECQQJBAkECQYLBAkGCwYJBgsGCwYJCAsGCwgJBgsICQgLCAkICwgJCgkKCQoJCgcKCQwHDAcMBwwFDAcMAw4FDAMOAw4BDgMQARAAEAESABIAEgIQAg4CDgIOBA4CDgQMBAwEDAQMBgoECgYKBgoGCgYIBggGCAgIBggGBgYIBgYGBgYGBgYGBAgGBgQIBAYECAQQChIIEggSBhIEEgQSBBQCFAISABQAEgASABIAEgESARIBEAEQAxIDDgMQAxADDgUOBQwDDAMMAwoDCAMIAQYBe6cCAwIDAgUAAwIFAgUCBwIFAgcCBQIHAgUCBwIHAAUCBwIHAgUABwIHAgcABQIHAAcCBwAFAgUABQIFAAUABQIDAAEAAQABAQEAAQEBAQEBAQEBAQEDAQEAAwEBAQMAAwEDAAMBAwADAQMAAwABAQMAAwADAAEAAwIBAAMCAQQDAgE=",
+  "t":"BgABAUe8BLACWAAaEADRAhsOaQANAA0ADwINAA0CDQANAg0CDQINBA0CCwYNBA0GCwYNBgsIDQgLCAsKCwgJDAsKCQwJDAkOCQ4HEAcSBxIHEgUUAOAEawAVEQDWAhYTbAAAygIVFOYCABUXAMUCogEAFhQA1QIVEqEBAADzAwIFBAMEBQQDBAMEAwYDBgMGAwYBCAEGAQgBBgEIAAgA",
+  "w":"BgABARz8BsAEINYCKNgBERLuAgARD+8B3QgSEc0CABQSW7YCV7UCFBHJAgASEpMC3AgREvACABERmAHxBDDaAVeYAxES7gIAEREo1QE81wIIAA==",
+  "z":"BgABAQ6cA9AGuQIAFw8AzAIaC9QFAAAr9wKjBuACABYQAMsCGQyZBgCaA9AG"
+   }';
+BEGIN
 
+  IF font IS NULL THEN
+    font := font_default;
+  END IF;
+
+  -- For character spacing, use m as guide size
+  geom := ST_GeomFromTWKB(decode(font->>'m', 'base64'));
+  m_width := ST_XMax(geom) - ST_XMin(geom);
+  spacing := m_width / 12;
+
+  letterarray := regexp_split_to_array(replace(letters, ' ', E'\t'), E'');
+  FOREACH letter IN ARRAY letterarray
+  LOOP
+    geom := ST_GeomFromTWKB(decode(font->>(letter), 'base64'));
+    -- Chars are not already zeroed out, so do it now
+    geom := ST_Translate(geom, -1 * ST_XMin(geom), 0.0);
+    -- unknown characters are treated as spaces
+    IF geom IS NULL THEN
+      -- spaces are a "quarter m" in width
+      width := m_width / 3.5;
+    ELSE
+      width := (ST_XMax(geom) - ST_XMin(geom));
+    END IF;
+    geom := ST_Translate(geom, position, 0.0);
+    -- Tighten up spacing when characters have a large gap
+    -- between them like Yo or To
+    adjustment := 0.0;
+    IF prevgeom IS NOT NULL AND geom IS NOT NULL THEN
+      dist = ST_Distance(prevgeom, geom);
+      IF dist > spacing THEN
+        adjustment = spacing - dist;
+        geom := ST_Translate(geom, adjustment, 0.0);
+      END IF;
+    END IF;
+    prevgeom := geom;
+    position := position + width + spacing + adjustment;
+    wordarr := array_append(wordarr, geom);
+  END LOOP;
+  -- apply the start point and scaling options
+  wordgeom := ST_CollectionExtract(ST_Collect(wordarr));
+  wordgeom := ST_Scale(wordgeom,
+                text_height/font_default_height,
+                text_height/font_default_height);
+  return wordgeom;
+END;
+$$
+LANGUAGE 'plpgsql'
+SET standard_conforming_strings = ON
+IMMUTABLE COST 250 PARALLEL SAFE;
+
+
+-----------------------------------------------------------------------
+-- ST_RemoveIrrelevantPointsForView
+-----------------------------------------------------------------------
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_RemoveIrrelevantPointsForView(geometry, box2d, boolean default false)
+RETURNS geometry
+AS '$libdir/postgis-3.5','ST_RemoveIrrelevantPointsForView'
+	LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
+
+-----------------------------------------------------------------------
+-- ST_RemoveSmallParts
+-----------------------------------------------------------------------
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION ST_RemoveSmallParts(geometry, double precision, double precision)
+RETURNS geometry
+AS '$libdir/postgis-3.5','ST_RemoveSmallParts'
+LANGUAGE 'c' IMMUTABLE STRICT PARALLEL SAFE
+	COST 250;
 
 
